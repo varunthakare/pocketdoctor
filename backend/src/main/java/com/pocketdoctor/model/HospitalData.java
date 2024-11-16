@@ -15,6 +15,7 @@ public class HospitalData {
     String username;
     String name;
     String password;
+    String address;
     boolean verify;
 
     public HospitalData(){}
@@ -27,24 +28,33 @@ public class HospitalData {
         this.username = username;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        HospitalData that = (HospitalData) o;
-        return verify == that.verify && Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(name, that.name) && Objects.equals(password, that.password);
+    public String getAddress() {
+        return address;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, username, name, password, verify);
-    }
-
-    public HospitalData(Integer id, String username, String name, String password, boolean verify) {
+    public HospitalData(Integer id, String username, String name, String password, String address, boolean verify) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.password = password;
+        this.address = address;
         this.verify = verify;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        HospitalData that = (HospitalData) o;
+        return verify == that.verify && Objects.equals(id, that.id) && Objects.equals(username, that.username) && Objects.equals(name, that.name) && Objects.equals(password, that.password) && Objects.equals(address, that.address);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username, name, password, address, verify);
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getPassword() {
