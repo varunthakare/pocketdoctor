@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'signin_page.dart';
 import 'dashboard_page.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -9,10 +12,74 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
 }
 
+Future<void> sendOtp(String name,String email,String mobileno) async {
+  final url = Uri.parse('http://localhost:8585/api/register');
+  final body = json.encode(
+      {
+        "name":name,
+        "email":email,
+        "mobileno": mobileno
+      });
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      print('OTP sent successfully: $responseData');
+      // Handle response data as needed
+    } else {
+      print('Failed to send OTP: ${response.statusCode}');
+      print('Error: ${response.body}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
+Future<void> verifyOtp(BuildContext context,String mobileNo, String otp) async {
+  final url = Uri.parse('http://localhost:8585/api/login/otp-verify');
+  final body = json.encode({"mobileno": mobileNo, "otp": otp});
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      print('OTP verification successful: $responseData');
+      // Handle response data as needed
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardPage()),
+      );
+    } else {
+      print('Failed to verify OTP: ${response.statusCode}');
+      print('Error: ${response.body}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
 class _SignUpPageState extends State<SignUpPage> {
   // Initial position for animation
   double _bottomPosition = -500;
   bool _showOTPFields = false; // To control visibility of OTP fields
+  final TextEditingController name = TextEditingController();
+  final TextEditingController email = TextEditingController();
+  final TextEditingController mobileno = TextEditingController();
+  final TextEditingController otp = TextEditingController();
 
   @override
   void initState() {
@@ -73,6 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 30),
                     // Name field
                     TextField(
+                      controller: name,
                       decoration: InputDecoration(
                         labelText: 'Name',
                         border: OutlineInputBorder(
@@ -87,6 +155,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 20),
                     // Email field
                     TextField(
+                      controller: email,
                       decoration: InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(
@@ -101,6 +170,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     const SizedBox(height: 20),
                     // Mobile Number field
                     TextField(
+                      controller: mobileno,
                       decoration: InputDecoration(
                         labelText: 'Mobile Number',
                         border: OutlineInputBorder(
@@ -119,6 +189,8 @@ class _SignUpPageState extends State<SignUpPage> {
                       child: Center(
                         child: ElevatedButton(
                           onPressed: () {
+
+                            sendOtp(name.text,email.text,mobileno.text);
                             setState(() {
                               _showOTPFields = true; // Show OTP fields when clicked
                             });
@@ -147,6 +219,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           // OTP field
                           TextField(
                             obscureText: true,
+                            controller: otp,
                             decoration: InputDecoration(
                               labelText: 'OTP',
                               border: OutlineInputBorder(
@@ -164,10 +237,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             child: ElevatedButton(
                               onPressed: () {
                                 // Handle Sign Up action
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => DashboardPage()),
-                                );
+                                verifyOtp(context,mobileno.text,otp.text);
+
                               },
                               style: ElevatedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(

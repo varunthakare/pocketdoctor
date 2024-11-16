@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class DocterLoginPage extends StatelessWidget {
+
+  final TextEditingController username = TextEditingController();
+  final TextEditingController password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,43 +22,6 @@ class DocterLoginPage extends StatelessWidget {
           ),
           child: Row(
             children: [
-              // Left: Registration Section
-              // Expanded(
-              //   child: Column(
-              //     mainAxisAlignment: MainAxisAlignment.center,
-              //     crossAxisAlignment: CrossAxisAlignment.center,
-              //     children: [
-              //       Text(
-              //         'Docter Register',
-              //         style: TextStyle(
-              //           fontSize: 20,
-              //           fontWeight: FontWeight.w600,
-              //           color: Colors.black,
-              //         ),
-              //       ),
-              //       SizedBox(height: 20),
-              //       _buildTextField('Docter Name'),
-              //       SizedBox(height: 15),
-              //       _buildTextField('Qualification'),
-              //       SizedBox(height: 15),
-              //       _buildTextField('Specialist'),
-              //       SizedBox(height: 15),
-              //       _buildTextField('Hospital ID'),
-              //       SizedBox(height: 15),
-              //       _buildTextField('Mobile Number'),
-              //       SizedBox(height: 15),
-              //       _buildTextField('OTP'),
-              //       SizedBox(height: 25),
-              //       _buildButton('SEND OTP'),
-              //     ],
-              //   ),
-              // ),
-              // // Divider
-              // VerticalDivider(
-              //   color: Colors.grey.shade300,
-              //   thickness: 1,
-              //   width: 40,
-              // ),
               // Right: Login Section
               Expanded(
                 child: Column(
@@ -68,11 +37,11 @@ class DocterLoginPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    _buildTextField('Username'),
+                    _buildTextField('Username', controller: username),
                     SizedBox(height: 15),
-                    _buildTextField('password'),
+                    _buildTextField('Password', controller: password, obscureText: true),
                     SizedBox(height: 25),
-                    _buildButton('SIGN IN'),
+                    _buildButton('SIGN IN', onPressed: () => _handleSignIn(context)),
                   ],
                 ),
               ),
@@ -83,45 +52,46 @@ class DocterLoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hint, {bool obscureText = false}) {
-  return SizedBox(
-    width: 250, // Adjust the width of the text box here
-    child: TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        hintText: hint,
-        hintStyle: TextStyle(
-          color: Colors.grey.shade500,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
+  Widget _buildTextField(String hint, {bool obscureText = false, required TextEditingController controller}) {
+    return SizedBox(
+      width: 250, // Adjust the width of the text box here
+      child: TextField(
+        obscureText: obscureText,
+        controller: controller,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          hintText: hint,
+          hintStyle: TextStyle(
+            color: Colors.grey.shade500,
           ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300,
+            ),
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(
-            color: Colors.blue,
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-  Widget _buildButton(String label) {
+  Widget _buildButton(String label, {required Function() onPressed}) {
     return SizedBox(
       width: 250,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 15),
           shape: RoundedRectangleBorder(
@@ -139,6 +109,45 @@ class DocterLoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleSignIn(BuildContext context) async {
+    final String usernameText = username.text;
+    final String passwordText = password.text;
+
+    if (usernameText.isEmpty || passwordText.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter both username and password')),
+      );
+      return;
+    }
+
+    final Map<String, dynamic> loginData = {
+      "username": usernameText,
+      "password": passwordText
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:8585/api/doctor/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(loginData),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
   }
 }
 

@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HospitalLoginPage extends StatelessWidget {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+  final TextEditingController loginUsernameController = TextEditingController();
+  final TextEditingController loginPasswordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,17 +40,17 @@ class HospitalLoginPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    _buildTextField('Hospital Name'),
+                    _buildTextField('Hospital Name', controller: nameController),
                     SizedBox(height: 15),
-                     _buildTextField('Complete Address'),
+                    _buildTextField('Complete Address', controller: addressController),
                     SizedBox(height: 15),
                     _buildAttachmentField('Attach License'),
                     SizedBox(height: 25),
-                    _buildTextField('Username'),
+                    _buildTextField('Username', controller: usernameController),
                     SizedBox(height: 15),
-                    _buildTextField('Password', obscureText: true),
+                    _buildTextField('Password', controller: passwordController, obscureText: true),
                     SizedBox(height: 15),
-                    _buildButton('VERIFY'),
+                    _buildButton('VERIFY', onPressed: () => _handleVerify(context)),
                   ],
                 ),
               ),
@@ -58,7 +67,7 @@ class HospitalLoginPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      'Hospital Register',
+                      'Hospital Login',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -66,11 +75,11 @@ class HospitalLoginPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    _buildTextField('Username'),
+                    _buildTextField('Username', controller: loginUsernameController),
                     SizedBox(height: 15),
-                    _buildTextField('Password', obscureText: true),
+                    _buildTextField('Password', controller: loginPasswordController, obscureText: true),
                     SizedBox(height: 25),
-                    _buildButton('SIGN IN'),
+                    _buildButton('SIGN IN', onPressed: () => _handleSignIn(context)),
                   ],
                 ),
               ),
@@ -81,93 +90,160 @@ class HospitalLoginPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hint, {bool obscureText = false}) {
-  return SizedBox(
-    width: 250, // Adjust the width of the text box here
-    child: TextField(
-      obscureText: obscureText,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        hintText: hint,
-        hintStyle: TextStyle(
-          color: Colors.grey.shade500,
-        ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
+  Widget _buildTextField(String hint, {bool obscureText = false, TextEditingController? controller}) {
+    return SizedBox(
+      width: 250, // Adjust the width of the text box here
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          hintText: hint,
+          hintStyle: TextStyle(
+            color: Colors.grey.shade500,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.grey.shade300,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(
-            color: Colors.grey.shade300,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(
+      ),
+    );
+  }
+
+  Widget _buildAttachmentField(String label) {
+    return SizedBox(
+      width: 250,
+      child: OutlinedButton.icon(
+        onPressed: () {}, // Add functionality for attachment handling
+        icon: Icon(Icons.attach_file, color: Colors.blue),
+        label: Text(
+          label,
+          style: TextStyle(
             color: Colors.blue,
           ),
         ),
-      ),
-    ),
-  );
-}
-
-
-  Widget _buildAttachmentField(String label) {
-    return Container(
-      width: 250,
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25),
-        border: Border.all(color: Colors.grey.shade300),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.add_circle, color: Colors.grey, size: 25),
-          SizedBox(width: 10),
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButton(String label) {
-    return SizedBox(
-      width: 250,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 15),
+        style: OutlinedButton.styleFrom(
+          side: BorderSide(color: Colors.grey.shade300),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25),
           ),
-          backgroundColor: Color(0xFF4A8EFF), // Matching button color
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
         ),
       ),
     );
   }
-}
 
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: HospitalLoginPage(),
-  ));
+  Widget _buildButton(String text, {required VoidCallback onPressed}) {
+    return SizedBox(
+      width: 150,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        child: Text(text),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF4A8EFF),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
+          padding: EdgeInsets.symmetric(vertical: 15),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _handleVerify(BuildContext context) async {
+    final String name = nameController.text;
+    final String username = usernameController.text;
+    final String password = passwordController.text;
+    final String address = addressController.text;
+
+    if (name.isEmpty || username.isEmpty || password.isEmpty || address.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill out all fields')),
+      );
+      return;
+    }
+
+    final Map<String, dynamic> jsonData = {
+      "name": name,
+      "username": username,
+      "password": password,
+      "address": address,
+      "verify": false
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:8585/api/hospitals/add'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(jsonData),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+  Future<void> _handleSignIn(BuildContext context) async {
+    final String username = loginUsernameController.text;
+    final String password = loginPasswordController.text;
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter both username and password')),
+      );
+      return;
+    }
+
+    final Map<String, dynamic> loginData = {
+      "username": username,
+      "password": password
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:8585/api/hospitals/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(loginData),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login successful')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Login failed: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 }

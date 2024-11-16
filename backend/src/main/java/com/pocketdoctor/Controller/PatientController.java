@@ -115,7 +115,13 @@ public class PatientController {
         if (existingUser == null) {
             // Save new user
             //KYC status to false by default
+            String otp = otpService.generateOtp();
+            patientData.setOtp(otp);
             userServices.saveUser(patientData);
+
+            System.out.println(otp);
+
+
 
             // Generate JWT token with user details
             Map<String, Object> claims = new HashMap<>();

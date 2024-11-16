@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
 import 'dashboard_page.dart';
+import 'package:http/http.dart' as http;
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -9,10 +12,72 @@ class SignInPage extends StatefulWidget {
   _SignInPageState createState() => _SignInPageState();
 }
 
+Future<void> sendOtp(String mobileno) async {
+  final url = Uri.parse('http://localhost:8585/api/login');
+  final body = json.encode(
+      {
+        "mobileno": mobileno
+      });
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      print('OTP sent successfully: $responseData');
+      // Handle response data as needed
+    } else {
+      print('Failed to send OTP: ${response.statusCode}');
+      print('Error: ${response.body}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
+Future<void> verifyOtp(BuildContext context,String mobileNo, String otp) async {
+  final url = Uri.parse('http://localhost:8585/api/login/otp-verify');
+  final body = json.encode({"mobileno": mobileNo, "otp": otp});
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      print('OTP verification successful: $responseData');
+      // Handle response data as needed
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DashboardPage()),
+      );
+    } else {
+      print('Failed to verify OTP: ${response.statusCode}');
+      print('Error: ${response.body}');
+    }
+  } catch (e) {
+    print('Error: $e');
+  }
+}
+
 class _SignInPageState extends State<SignInPage> {
   double _bottomPosition = -500;
   bool _showOtpFields = false;
   bool _isOtpButtonVisible = true; // Track the visibility of the OTP button
+
+  final TextEditingController mobileno = TextEditingController();
+  final TextEditingController otp = TextEditingController();
 
   @override
   void initState() {
@@ -68,6 +133,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   const SizedBox(height: 30),
                   TextField(
+                    controller: mobileno,
                     decoration: InputDecoration(
                       labelText: 'Mobile Number',
                       border: OutlineInputBorder(
@@ -84,6 +150,9 @@ class _SignInPageState extends State<SignInPage> {
                   if (_isOtpButtonVisible)
                     ElevatedButton(
                       onPressed: () {
+
+                        sendOtp(mobileno.text);
+
                         setState(() {
                           _showOtpFields = true;
                           _isOtpButtonVisible = false; // Hide the button when clicked
@@ -110,6 +179,7 @@ class _SignInPageState extends State<SignInPage> {
                       child: Column(
                         children: [
                           TextField(
+                            controller: otp,
                             obscureText: true,
                             decoration: InputDecoration(
                               labelText: 'OTP',
@@ -125,10 +195,9 @@ class _SignInPageState extends State<SignInPage> {
                           const SizedBox(height: 30),
                           ElevatedButton(
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => DashboardPage()),
-                              );
+
+                              verifyOtp(context, mobileno.text, otp.text);
+
                             },
                             style: ElevatedButton.styleFrom(
                               padding: const EdgeInsets.symmetric(
