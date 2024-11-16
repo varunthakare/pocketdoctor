@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signin_page.dart';
+import 'dashboard_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -11,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   // Initial position for animation
   double _bottomPosition = -500;
+  bool _showOTPFields = false; // To control visibility of OTP fields
 
   @override
   void initState() {
@@ -111,39 +113,77 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    // OTP field
-                    TextField(
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: 'OTP',
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: const Color(0xFF3254ED), // Border color same as background
+                    // SEND OTP button
+                    Visibility(
+                      visible: !_showOTPFields, // Show only if OTP fields are hidden
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _showOTPFields = true; // Show OTP fields when clicked
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 100), // Increased width
+                            backgroundColor: const Color(0xFF3254ED), // Background color same as page
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          child: const Text(
+                            'SEND OTP',
+                            style: TextStyle(fontSize: 18, color: Colors.white), // White text color
                           ),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16),
                       ),
                     ),
-                    const SizedBox(height: 30),
-                    // Sign Up button
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // Handle Sign Up action
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 100), // Increased width
-                          backgroundColor: const Color(0xFF3254ED), // Background color same as page
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
+                    const SizedBox(height: 20),
+                    // OTP field and SIGN UP button (appears after SEND OTP button click)
+                    Visibility(
+                      visible: _showOTPFields, // Show only when OTP fields are triggered
+                      child: Column(
+                        children: [
+                          // OTP field
+                          TextField(
+                            obscureText: true,
+                            decoration: InputDecoration(
+                              labelText: 'OTP',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: const Color(0xFF3254ED), // Border color same as background
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 12, horizontal: 16),
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          'SIGN UP',
-                          style: TextStyle(fontSize: 18, color: Colors.white), // White text color
-                        ),
+                          const SizedBox(height: 30),
+                          // Sign Up button
+                          Center(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                // Handle Sign Up action
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => DashboardPage()),
+                                );
+                              },
+                              style: ElevatedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 12, horizontal: 100), // Increased width
+                                backgroundColor: const Color(0xFF3254ED), // Background color same as page
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                              child: const Text(
+                                'SIGN UP',
+                                style: TextStyle(fontSize: 18, color: Colors.white), // White text color
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 20),
