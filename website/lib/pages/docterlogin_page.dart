@@ -95,7 +95,7 @@ class DocterLoginPage extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 15),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(10),
           ),
           backgroundColor: Color(0xFF4A8EFF), // Matching button color
         ),
@@ -103,7 +103,6 @@ class DocterLoginPage extends StatelessWidget {
           label,
           style: TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),

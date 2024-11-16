@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import 'hospitaldash_page.dart';
+import 'docterdash_page.dart';
 
 class IntroPage extends StatefulWidget {
   @override
@@ -120,6 +122,10 @@ class _IntroPageState extends State<IntroPage> with SingleTickerProviderStateMix
                           ),
                           onPressed: () {
                             // Define Register button action
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => DocterDashPage()),
+                            );
                           },
                           child: const Text(
                             'Register Now',
