@@ -20,4 +20,5 @@ public interface DoctorRepository extends JpaRepository<DoctorData, Integer> {
 
     Optional<DoctorData> findByMobileno(String mobile);
 
+    int countByHospitalId(String hospitalId);
 }

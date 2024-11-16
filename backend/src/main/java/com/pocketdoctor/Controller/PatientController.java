@@ -33,6 +33,7 @@ public class PatientController {
     @Autowired
     private JwtUtil jwtUtil;
 
+
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody PatientData patientData) {
         String otp = otpService.generateOtp();
@@ -179,6 +180,5 @@ public class PatientController {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
-
 
 }

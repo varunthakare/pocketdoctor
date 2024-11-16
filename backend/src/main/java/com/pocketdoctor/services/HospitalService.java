@@ -38,4 +38,9 @@ public class HospitalService {
 
         return hospitalRepository.findByUsernameAndPassword(username,password).orElse(null);
     }
+
+    public Long getHospitalIdByUsername(String username) {
+
+        return hospitalRepository.findByUsername(username);
+    }
 }

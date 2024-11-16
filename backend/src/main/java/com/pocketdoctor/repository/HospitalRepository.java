@@ -12,4 +12,6 @@ public interface HospitalRepository extends JpaRepository<HospitalData, Integer>
 
     Optional<HospitalData> findByUsernameAndPassword(String username,String password);
 
+    long findByUsername(String username);
+
 }

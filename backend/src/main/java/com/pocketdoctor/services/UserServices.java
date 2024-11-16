@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -17,6 +20,8 @@ public class UserServices {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+
 
     public PatientData registerUser(String name, String email, String type, String mobileno, String otp){
 
@@ -81,4 +86,7 @@ public class UserServices {
 
         return userRepository.findByMobileno(mobileno).orElse(null);
     }
+
+
+
 }

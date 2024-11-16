@@ -9,6 +9,7 @@ class HospitalLoginPage extends StatelessWidget {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController loginUsernameController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
+  final TextEditingController bedsController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +46,8 @@ class HospitalLoginPage extends StatelessWidget {
                     _buildTextField('Complete Address', controller: addressController),
                     SizedBox(height: 15),
                     _buildAttachmentField('Attach License'),
+                    SizedBox(height: 25),
+                    _buildTextField('Total no. of beds', controller: bedsController),
                     SizedBox(height: 25),
                     _buildTextField('Username', controller: usernameController),
                     SizedBox(height: 15),
@@ -129,7 +132,9 @@ class HospitalLoginPage extends StatelessWidget {
     return SizedBox(
       width: 250,
       child: OutlinedButton.icon(
-        onPressed: () {}, // Add functionality for attachment handling
+        onPressed: () {
+          // Add functionality for attachment handling here
+        },
         icon: Icon(Icons.attach_file, color: Colors.blue),
         label: Text(
           label,
@@ -169,8 +174,9 @@ class HospitalLoginPage extends StatelessWidget {
     final String username = usernameController.text;
     final String password = passwordController.text;
     final String address = addressController.text;
+    final String beds = bedsController.text;
 
-    if (name.isEmpty || username.isEmpty || password.isEmpty || address.isEmpty) {
+    if (name.isEmpty || username.isEmpty || password.isEmpty || address.isEmpty || beds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Please fill out all fields')),
       );
@@ -182,6 +188,7 @@ class HospitalLoginPage extends StatelessWidget {
       "username": username,
       "password": password,
       "address": address,
+      "beds": beds,
       "verify": false
     };
 
@@ -235,6 +242,7 @@ class HospitalLoginPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login successful')),
         );
+        // You can add navigation to the next page or dashboard here
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login failed: ${response.body}')),

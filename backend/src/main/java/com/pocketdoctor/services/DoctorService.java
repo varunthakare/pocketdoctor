@@ -45,4 +45,10 @@ public class DoctorService {
             throw new RuntimeException("User with mobile number " + mobileno + " not found.");
         }
     }
+
+    public int getTotalDoctorsByHospital(String hospitalId) {
+        return doctorRepository.countByHospitalId(hospitalId);  // Assuming you have this query method in the repository
+    }
+
+
 }

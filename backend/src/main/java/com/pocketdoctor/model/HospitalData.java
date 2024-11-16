@@ -17,6 +17,15 @@ public class HospitalData {
     String password;
     String address;
     boolean verify;
+    String beds;
+
+    public String getBeds() {
+        return beds;
+    }
+
+    public void setBeds(String beds) {
+        this.beds = beds;
+    }
 
     public HospitalData(){}
 
@@ -32,12 +41,13 @@ public class HospitalData {
         return address;
     }
 
-    public HospitalData(Integer id, String username, String name, String password, String address, boolean verify) {
+    public HospitalData(Integer id, String username, String name, String password, String address, boolean verify,String beds) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.password = password;
         this.address = address;
+        this.beds = beds;
         this.verify = verify;
     }
 
