@@ -1,0 +1,71 @@
+package com.pocketdoctor.Controller;
+
+import com.pocketdoctor.model.DoctorData;
+import com.pocketdoctor.repository.DoctorRepository;
+import com.pocketdoctor.services.OtpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/doctor")
+@CrossOrigin(origins = "*")
+public class DoctorController {
+
+
+
+    @Autowired
+    private DoctorRepository doctorRepository;
+
+    @Autowired
+    private OtpService otpService;
+
+    @Autowired
+    private OtpController otpController;
+
+    @PostMapping("/add")
+    public ResponseEntity<DoctorData> addDoctor(@RequestBody DoctorData doctorData) {
+
+        String otp = otpService.generateOtp();
+
+        try {
+            doctorData.setOtp(otp);
+            DoctorData savedDoctor = doctorRepository.save(doctorData);
+            otpController.sendOtp(doctorData.getMobileno(), otp);
+            return new ResponseEntity<>(savedDoctor, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    @PostMapping("/add/verify")
+    public ResponseEntity<DoctorData> verify(@RequestBody Map<String, String> request) {
+        String mobileno = request.get("mobileno");
+        String otp = request.get("otp");
+
+        if (mobileno == null || otp == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<DoctorData> doctorDataOptional = doctorRepository.findByMobileno(mobileno);
+
+        if (doctorDataOptional.isPresent()) {
+            DoctorData doctorData = doctorDataOptional.get();
+            if (doctorData.getOtp().equals(otp)) {
+                doctorData.setVerify(true);
+                doctorRepository.save(doctorData);
+                return new ResponseEntity<>(doctorData, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+            }
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+}

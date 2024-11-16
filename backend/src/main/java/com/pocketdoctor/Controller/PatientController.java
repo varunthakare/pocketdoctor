@@ -1,6 +1,6 @@
 package com.pocketdoctor.Controller;
 
-import com.pocketdoctor.model.UserData;
+import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.services.OtpService;
 import com.pocketdoctor.services.UserServices;
 import com.pocketdoctor.utils.JwtUtil;
@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
-public class PageController {
+public class PatientController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PageController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
     @Autowired
     private UserServices userServices;
@@ -34,16 +34,16 @@ public class PageController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserData userData) {
+    public ResponseEntity<String> loginUser(@RequestBody PatientData patientData) {
         String otp = otpService.generateOtp();
-        String mobileno = userData.getMobileno();
-             UserData existingUser = userServices.findByMobileNo(mobileno);
+        String mobileno = patientData.getMobileno();
+        PatientData existingUser = userServices.findByMobileNo(mobileno);
 
         if (existingUser != null) {
             existingUser.setOtp(otp);
             userServices.updateUser(existingUser, mobileno);
         } else {
-            UserData newUser = new UserData();
+            PatientData newUser = new PatientData();
             newUser.setMobileno(mobileno);
             newUser.setOtp(otp);
             userServices.saveUser(newUser);
@@ -57,18 +57,18 @@ public class PageController {
     }
 
     @PostMapping("/login/otp-verify")
-    public ResponseEntity<Map<String, Object>> loginUserVerifyOtp(@RequestBody UserData userData) {
+    public ResponseEntity<Map<String, Object>> loginUserVerifyOtp(@RequestBody PatientData patientData) {
         Map<String, Object> response = new HashMap<>();
 
         // Authenticate the user with the mobile number and OTP
-        boolean authenticated = userServices.authenticateUser(userData.getMobileno(), userData.getOtp());
+        boolean authenticated = userServices.authenticateUser(patientData.getMobileno(), patientData.getOtp());
         if (!authenticated) {
             response.put("message", "Invalid OTP");
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // Find the existing user by mobile number
-        UserData existingUser = userServices.findByMobileNo(userData.getMobileno());
+        PatientData existingUser = userServices.findByMobileNo(patientData.getMobileno());
         if (existingUser == null) {
             response.put("message", "User not found");
             return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -105,30 +105,30 @@ public class PageController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserData userData) {
+    public ResponseEntity<Map<String, Object>> registerUser(@RequestBody PatientData patientData) {
         Map<String, Object> response = new HashMap<>();
 
         // Check if the user already exists based on the mobile number
-        UserData existingUser = userServices.findByMobileNo(userData.getMobileno());
+        PatientData existingUser = userServices.findByMobileNo(patientData.getMobileno());
 
         // If no existing user is found, register a new user
         if (existingUser == null) {
             // Save new user
-           //KYC status to false by default
-            userServices.saveUser(userData);
+            //KYC status to false by default
+            userServices.saveUser(patientData);
 
             // Generate JWT token with user details
             Map<String, Object> claims = new HashMap<>();
-            claims.put("name", userData.getName());
-            claims.put("role", userData.getType());
-            claims.put("mobile", userData.getMobileno());
+            claims.put("name", patientData.getName());
+            claims.put("role", patientData.getType());
+            claims.put("mobile", patientData.getMobileno());
 
             // Generate JWT token
-            String jwtToken = jwtUtil.generateTokenAndStore(claims, userData.getMobileno());
+            String jwtToken = jwtUtil.generateTokenAndStore(claims, patientData.getMobileno());
 
             // Return response with token and user details
             response.put("message", "User registered successfully");
-            response.put("role", userData.getType()); // 'Farmer' or 'Consumer'
+            response.put("role", patientData.getType()); // 'Farmer' or 'Consumer'
             response.put("token", jwtToken); // Include token in the response
 
             return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -136,9 +136,9 @@ public class PageController {
 
         // If the user's name and type are not set, update user details
         if (existingUser.getName() == null && existingUser.getType() == null) {
-            existingUser.setName(userData.getName());
-            existingUser.setType(userData.getType());
-            userServices.updateUser(existingUser, userData.getMobileno());
+            existingUser.setName(patientData.getName());
+            existingUser.setType(patientData.getType());
+            userServices.updateUser(existingUser, patientData.getMobileno());
 
             // Generate updated JWT token
             Map<String, Object> claims = new HashMap<>();

@@ -6,8 +6,8 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "userInfo")
-public class UserData {
+@Table(name = "patientInfo")
+public class PatientData {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,9 +30,9 @@ public class UserData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserData userData = (UserData) o;
+        PatientData patientData = (PatientData) o;
         //return Objects.equals(id, userData.id) && Objects.equals(name, userData.name) && Objects.equals(email, userData.email) && Objects.equals(mobileno, userData.mobileno) && Objects.equals(type, userData.type) && Objects.equals(otp, userData.otp);
-        return Objects.equals(id, userData.id) && Objects.equals(name, userData.name) && Objects.equals(mobileno, userData.mobileno) && Objects.equals(type, userData.type) && Objects.equals(otp, userData.otp);
+        return Objects.equals(id, patientData.id) && Objects.equals(name, patientData.name) && Objects.equals(mobileno, patientData.mobileno) && Objects.equals(type, patientData.type) && Objects.equals(otp, patientData.otp);
     }
 
     @Override
@@ -51,14 +51,7 @@ public class UserData {
                 ", otp='" + otp + '\'' +
                 '}';
     }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    
 
     public String getOtp() {
         return otp;

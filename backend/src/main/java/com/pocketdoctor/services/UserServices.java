@@ -1,6 +1,6 @@
 package com.pocketdoctor.services;
 
-import com.pocketdoctor.model.UserData;
+import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,7 +18,7 @@ public class UserServices {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public UserData registerUser(String name, String email, String type, String mobileno, String otp){
+    public PatientData registerUser(String name, String email, String type, String mobileno, String otp){
 
 
             if(userRepository.findByMobileno(mobileno).isPresent()){
@@ -26,20 +26,20 @@ public class UserServices {
                 return null;
             }
 
-            UserData userData = new UserData();
+            PatientData patientData = new PatientData();
 
-            userData.setName(name);
+            patientData.setName(name);
             //userData.setEmail(email)
-            userData.setMobileno(mobileno);
-            userData.setOtp(otp);
+            patientData.setMobileno(mobileno);
+            patientData.setOtp(otp);
 
-            userRepository.save(userData);
-            return userData;
+            userRepository.save(patientData);
+            return patientData;
 
     }
     
     public boolean authenticateUser(String mobileno, String otp) {
-        Optional<UserData> user = userRepository.findByMobilenoAndOtp(mobileno, otp);
+        Optional<PatientData> user = userRepository.findByMobilenoAndOtp(mobileno, otp);
 
         // Check if user is found and OTP matches
         return user.isPresent();
@@ -47,25 +47,25 @@ public class UserServices {
 
 
     public boolean updateOtpInDatabase(String mobileNo, String otp) {
-        String sql = "UPDATE user_info SET otp = ? WHERE mobileno = ?";
+        String sql = "UPDATE patient_info SET otp = ? WHERE mobileno = ?";
         int result = jdbcTemplate.update(sql, otp, mobileNo);
         return result > 0;
     }
 
-    public void saveUser(UserData userData) {
-        userRepository.save(userData);
+    public void saveUser(PatientData patientData) {
+        userRepository.save(patientData);
     }
 
-    public void updateUser(UserData updatedUserData, String mobileno) {
+    public void updateUser(PatientData updatedPatientData, String mobileno) {
         // Find the existing user by mobile number
-        Optional<UserData> existingUserOptional = userRepository.findByMobileno(mobileno);
+        Optional<PatientData> existingUserOptional = userRepository.findByMobileno(mobileno);
 
         if (existingUserOptional.isPresent()) {
-            UserData existingUser = existingUserOptional.get();
+            PatientData existingUser = existingUserOptional.get();
 
             // Update the necessary fields from updatedUserData
-            existingUser.setName(updatedUserData.getName());
-            existingUser.setOtp(updatedUserData.getOtp());
+            existingUser.setName(updatedPatientData.getName());
+            existingUser.setOtp(updatedPatientData.getOtp());
 
             // Save the updated user
             userRepository.save(existingUser);
@@ -76,7 +76,7 @@ public class UserServices {
     }
 
 
-    public UserData findByMobileNo(String mobileno) {
+    public PatientData findByMobileNo(String mobileno) {
         return userRepository.findByMobileno(mobileno).orElse(null);
     }
 }
