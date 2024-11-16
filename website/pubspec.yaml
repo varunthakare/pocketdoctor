@@ -78,6 +78,7 @@ flutter:
       - lib/images/aboutapp_img.png
       - lib/images/hospital_img.png
       - lib/images/docter_img.png
+      - lib/images/hospitaldash_img.png
       
   #   - images/a_dot_ham.jpeg
 

@@ -153,21 +153,27 @@ class HospitalLoginPage extends StatelessWidget {
   }
 
   Widget _buildButton(String text, {required VoidCallback onPressed}) {
-    return SizedBox(
-      width: 150,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        child: Text(text),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF4A8EFF),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ),
-          padding: EdgeInsets.symmetric(vertical: 15),
+  return SizedBox(
+    width: 150,
+    child: ElevatedButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: TextStyle(
+          color: Colors.white, // Set text color to white
         ),
       ),
-    );
-  }
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Color(0xFF4A8EFF),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 15),
+      ),
+    ),
+  );
+}
+
 
   Future<void> _handleVerify(BuildContext context) async {
     final String name = nameController.text;
