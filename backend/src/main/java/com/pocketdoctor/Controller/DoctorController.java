@@ -1,8 +1,13 @@
 package com.pocketdoctor.Controller;
 
 import com.pocketdoctor.model.DoctorData;
+import com.pocketdoctor.model.HospitalData;
+import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.repository.DoctorRepository;
+import com.pocketdoctor.services.DoctorService;
 import com.pocketdoctor.services.OtpService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +21,13 @@ import java.util.Optional;
 @CrossOrigin(origins = "*")
 public class DoctorController {
 
-
+    private static final Logger logger = LoggerFactory.getLogger(DoctorController.class);
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+    @Autowired
+    private DoctorService doctorService;
 
     @Autowired
     private OtpService otpService;
@@ -66,6 +74,18 @@ public class DoctorController {
         } else {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> loginDoctor(@RequestBody DoctorData doctorData){
+        String username = doctorData.getUsername();
+        String password= doctorData.getPassword();
+        DoctorData existingUser = doctorService.findByUsernameAndPassword(username,password);
+
+        if(existingUser != null){
+            return new ResponseEntity<>("Login successfully", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Wrong Password and username", HttpStatus.NO_CONTENT);
     }
 
 }

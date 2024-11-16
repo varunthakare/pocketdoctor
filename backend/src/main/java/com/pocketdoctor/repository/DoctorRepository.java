@@ -16,6 +16,8 @@ public interface DoctorRepository extends JpaRepository<DoctorData, Integer> {
 
     Optional<DoctorData> findByMobilenoAndOtp(String mobileno, String otp);
 
+    Optional<DoctorData> findByUsernameAndPassword(String username, String password);
+
     Optional<DoctorData> findByMobileno(String mobile);
 
 }

@@ -53,6 +53,7 @@ public class UserServices {
     }
 
     public void saveUser(PatientData patientData) {
+
         userRepository.save(patientData);
     }
 
@@ -77,6 +78,7 @@ public class UserServices {
 
 
     public PatientData findByMobileNo(String mobileno) {
+
         return userRepository.findByMobileno(mobileno).orElse(null);
     }
 }

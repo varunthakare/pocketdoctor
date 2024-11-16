@@ -16,33 +16,54 @@ public class DoctorData {
     String mobileno;
     String otp;
     boolean verify;
+    String username;
+    String password;
     String qualification;
+    String specialist;
+    String hospitalId;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public DoctorData(){}
-    public DoctorData(Integer id, String name, String mobileno, String otp, boolean verify, String qualification, String specialist, String hospitalId) {
+
+    public DoctorData(Integer id, String name, String mobileno, String otp, boolean verify, String username, String password, String qualification, String specialist, String hospitalId) {
         this.id = id;
         this.name = name;
         this.mobileno = mobileno;
         this.otp = otp;
         this.verify = verify;
+        this.username = username;
+        this.password = password;
         this.qualification = qualification;
         this.specialist = specialist;
         this.hospitalId = hospitalId;
     }
 
-    String specialist;
-    String hospitalId;
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         DoctorData that = (DoctorData) o;
-        return verify == that.verify && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(mobileno, that.mobileno) && Objects.equals(otp, that.otp) && Objects.equals(qualification, that.qualification) && Objects.equals(specialist, that.specialist) && Objects.equals(hospitalId, that.hospitalId);
+        return verify == that.verify && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(mobileno, that.mobileno) && Objects.equals(otp, that.otp) && Objects.equals(username, that.username) && Objects.equals(password, that.password) && Objects.equals(qualification, that.qualification) && Objects.equals(specialist, that.specialist) && Objects.equals(hospitalId, that.hospitalId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, mobileno, otp, verify, qualification, specialist, hospitalId);
+        return Objects.hash(id, name, mobileno, otp, verify, username, password, qualification, specialist, hospitalId);
     }
 
     public DoctorData(String hospitalId, String specialist, String qualification, boolean verify, String otp, String mobileno, String name, Integer id) {

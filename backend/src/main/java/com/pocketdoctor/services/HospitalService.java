@@ -1,7 +1,9 @@
 package com.pocketdoctor.services;
 
 import com.pocketdoctor.model.DoctorData;
+import com.pocketdoctor.model.HospitalData;
 import com.pocketdoctor.repository.DoctorRepository;
+import com.pocketdoctor.repository.HospitalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,9 @@ import java.util.List;
 
 @Service
 public class HospitalService {
+
+    @Autowired
+    private HospitalRepository hospitalRepository;
 
     @Autowired
     private DoctorRepository doctorRepository;
@@ -28,5 +33,9 @@ public class HospitalService {
         }
 
         return verifiedData;
+    }
+    public HospitalData findByUsernameAndPassword(String username,String password) {
+
+        return hospitalRepository.findByUsernameAndPassword(username,password).orElse(null);
     }
 }
