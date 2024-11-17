@@ -60,14 +60,14 @@ class _DashboardPageState extends State<DashboardPage> {
             activeIcon: _buildActiveTabIcon(Icons.home, 'Home'),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today, color: Colors.grey),
+            icon: Icon(Icons.adb, color: Colors.grey),
             label: '',
-            activeIcon: _buildActiveTabIcon(Icons.calendar_today, 'Appointments'),
+            activeIcon: _buildActiveTabIcon(Icons.calendar_today, 'Chatbot'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.location_on, color: Colors.grey),
             label: '',
-            activeIcon: _buildActiveTabIcon(Icons.location_on, 'Nearby'),
+            activeIcon: _buildActiveTabIcon(Icons.location_on, 'Track'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history, color: Colors.grey),

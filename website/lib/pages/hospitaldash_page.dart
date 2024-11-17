@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:pocdoc_web/pages/adddocter_page.dart';
+
 class HospitalDashPage extends StatefulWidget {
   final String username;
   const HospitalDashPage({Key? key, required this.username}) : super(key: key);
@@ -275,7 +277,9 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
 
   // Function to add a doctor (you can implement the functionality)
   void _addDoctor() {
-    // For now, just show a Snackbar or implement navigation to add doctor page
-    _showErrorSnackBar('Add doctor functionality is under development.');
+     Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddDoctorPage()),
+    );
   }
 }

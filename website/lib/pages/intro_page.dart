@@ -124,7 +124,7 @@ class _IntroPageState extends State<IntroPage> with SingleTickerProviderStateMix
                             // Define Register button action
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DocterDashPage()),
+                              MaterialPageRoute(builder: (context) => HospitalDashPage(username: '',)),
                             );
                           },
                           child: const Text(
