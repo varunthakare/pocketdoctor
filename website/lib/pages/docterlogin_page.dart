@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'forgotpass_page.dart'; // Import the forgot password page
 
 class DocterLoginPage extends StatelessWidget {
-
   final TextEditingController username = TextEditingController();
   final TextEditingController password = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -21,29 +20,38 @@ class DocterLoginPage extends StatelessWidget {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: Row(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Right: Login Section
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Docter Sign in',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    _buildTextField('Username', controller: username),
-                    SizedBox(height: 15),
-                    _buildTextField('Password', controller: password, obscureText: true),
-                    SizedBox(height: 25),
-                    _buildButton('SIGN IN', onPressed: () => _handleSignIn(context)),
-                  ],
+              Text(
+                'Docter Sign in',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black,
+                ),
+              ),
+              SizedBox(height: 20),
+              _buildTextField('Username', controller: username),
+              SizedBox(height: 15),
+              _buildTextField('Password', controller: password, obscureText: true),
+              SizedBox(height: 25),
+              _buildButton('SIGN IN', onPressed: () => _handleSignIn(context)),
+              SizedBox(height: 15),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ForgotPassPage()),
+                  );
+                },
+                child: Text(
+                  'Forgot Password?',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 14,
+                  ),
                 ),
               ),
             ],
