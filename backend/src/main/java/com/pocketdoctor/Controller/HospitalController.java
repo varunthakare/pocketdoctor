@@ -80,25 +80,30 @@ public class HospitalController {
     @Autowired
     private AppointmentService appointmentService;
 
-    @GetMapping("/dashboard/{id}")
-    public ResponseEntity<Map<String, Object>> getDashboardData(@PathVariable("id") String hospitalId) {
-        // Fetch the hospitalId based on the username (modify this logic as needed)
-        // String hospitalId = userService.getHospitalIdByUsername(username); // Example method to get hospitalId by username
+    @GetMapping("/dashboard/{username}")
+    public ResponseEntity<Map<String, Object>> getDashboardData(@PathVariable("username") String username) {
+        // Fetch the hospitalId based on the username
+        Integer hospitalId = hospitalService.getHospitalId(username); // Ensure this returns a valid Integer or throws an exception
 
-        // Call service methods to get data based on hospitalId
-        // int totalBeds = bedService.getTotalBeds(hospitalId); // Modify this if necessary
-        int totalDoctors = doctorService.getTotalDoctorsByHospital(hospitalId); // Get total doctors by hospitalId
-        int totalPatients = appointmentService.getTotalPatientsByHospital(hospitalId); // Get total patients by hospitalId
+        if (hospitalId == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Hospital ID not found"));
+        }
+
+        String hospitalName = hospitalService.getHospitalName(String.valueOf(hospitalId));
+        int totalDoctors = doctorService.getTotalDoctorsByHospital(String.valueOf(hospitalId));
+        int totalPatients = appointmentService.getTotalPatientsByHospital(String.valueOf(hospitalId));
 
         // Prepare data to be returned in the response
         Map<String, Object> dashboardData = new HashMap<>();
-        // dashboardData.put("totalBeds", totalBeds);
+        dashboardData.put("ID", hospitalId);
+        dashboardData.put("Name", hospitalName);
         dashboardData.put("totalDoctors", totalDoctors);
         dashboardData.put("totalPatients", totalPatients);
 
         // Return the data as a ResponseEntity
         return ResponseEntity.ok(dashboardData);
     }
+
 
 
 

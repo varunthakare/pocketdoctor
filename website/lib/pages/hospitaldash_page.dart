@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class HospitalDashPage extends StatefulWidget {
-  const HospitalDashPage({Key? key}) : super(key: key);
+  final String username;
+  const HospitalDashPage({Key? key, required this.username}) : super(key: key);
 
   @override
   _HospitalDashPageState createState() => _HospitalDashPageState();
@@ -11,11 +14,54 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
   // Define a GlobalKey for the Scaffold
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String Name = "";
+  String ID = "";
+  int totalDoctors = 0;
+  int totalPatients = 0;
+
+  // Fetch data from the backend API
+  Future<void> _fetchDashboardData() async {
+    final url = Uri.parse('http://localhost:8585/api/hospitals/dashboard/${widget.username}');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+
+        setState(() {
+          ID = data['ID']; // Ensure 'ID' is correct in your backend response
+          Name = data['Name']; // Ensure 'Name' matches your backend field
+          totalDoctors = totalDoctors+int.parse(data['totalDoctors'].toString());
+          totalPatients = int.parse(data['totalPatients'].toString());
+          // Use data directly if already an int
+        });
+      } else {
+        throw Exception('Failed to load dashboard data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      _showErrorSnackBar('Error fetching data. Please try again later.');
+    }
+  }
+
+// Show error message in Snackbar
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchDashboardData(); // Call the function to fetch the data when the page loads
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,  // Assign the key to the Scaffold
-      // Drawer for menu
+      key: _scaffoldKey, // Assign the key to the Scaffold
       drawer: Drawer(
         child: Container(
           color: Colors.white, // Set the background color of the drawer
@@ -34,7 +80,7 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
                 onTap: () {
                   // Implement logout functionality here
                   Navigator.pop(context); // Close the drawer when tapped
-                  // Add logout logic (e.g., navigate to login page)
+                  _logout();
                 },
               ),
             ],
@@ -107,9 +153,9 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const SizedBox(height: 10),
-                      const Text(
-                        'Hospital Name',
-                        style: TextStyle(
+                      Text(
+                        '$Name', // Display hospital name
+                        style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
@@ -119,9 +165,9 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _buildInfoCard('TOTAL DOCTOR', '09'),
+                          _buildInfoCard('TOTAL DOCTOR', '$totalDoctors'),
                           const SizedBox(width: 100),
-                          _buildInfoCard('TOTAL PATIENT', '10'),
+                          _buildInfoCard('TOTAL PATIENT', '$totalPatients'),
                         ],
                       ),
                       const SizedBox(height: 50),
@@ -133,7 +179,10 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              // Add functionality for adding a doctor here
+                              _addDoctor();
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF4A8EFF),
                               shape: RoundedRectangleBorder(
@@ -216,5 +265,17 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
         ],
       ),
     );
+  }
+
+  // Function to log out the user
+  void _logout() {
+    // You can use Navigator to navigate to the login page or any other route
+    Navigator.pushReplacementNamed(context, '/login');
+  }
+
+  // Function to add a doctor (you can implement the functionality)
+  void _addDoctor() {
+    // For now, just show a Snackbar or implement navigation to add doctor page
+    _showErrorSnackBar('Add doctor functionality is under development.');
   }
 }

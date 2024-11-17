@@ -23,6 +23,7 @@ public class HospitalData {
         return beds;
     }
 
+
     public void setBeds(String beds) {
         this.beds = beds;
     }

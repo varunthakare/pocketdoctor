@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'hospitaldash_page.dart';
+
 class HospitalLoginPage extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController usernameController = TextEditingController();
@@ -248,7 +250,14 @@ class HospitalLoginPage extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login successful')),
         );
-        // You can add navigation to the next page or dashboard here
+
+        // Navigate to HospitalDashPage with username
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HospitalDashPage(username: username),
+          ),
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login failed: ${response.body}')),
@@ -260,4 +269,5 @@ class HospitalLoginPage extends StatelessWidget {
       );
     }
   }
+
 }

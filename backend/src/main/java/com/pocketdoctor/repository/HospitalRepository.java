@@ -9,9 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface HospitalRepository extends JpaRepository<HospitalData, Integer> {
+    Optional<HospitalData> findByUsername(String username); // Return an Optional<HospitalData>
 
-    Optional<HospitalData> findByUsernameAndPassword(String username,String password);
+    Optional<HospitalData> findByUsernameAndPassword(String username, String password);
 
-    long findByUsername(String username);
-
+    Optional<HospitalData> findById(Integer id);
 }

@@ -39,8 +39,19 @@ public class HospitalService {
         return hospitalRepository.findByUsernameAndPassword(username,password).orElse(null);
     }
 
-    public Long getHospitalIdByUsername(String username) {
-
-        return hospitalRepository.findByUsername(username);
+    public String getHospitalName(String hospitalId) {
+        // Fetch the HospitalData using hospitalId
+        return hospitalRepository.findById(Integer.valueOf(hospitalId))
+                .map(HospitalData::getName) // Assuming the name field is called `name`
+                .orElse("Hospital name not found"); // Handle if no record is found
     }
+
+    public Integer getHospitalId(String username) {
+        // Fetch the HospitalData using username
+        return hospitalRepository.findByUsername(username)
+                .map(HospitalData::getId) // Assuming `getId()` returns the hospital's ID
+                .orElse(null); // Return null or throw a custom exception if not found
+    }
+
+
 }
