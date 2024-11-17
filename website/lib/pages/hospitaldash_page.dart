@@ -30,11 +30,10 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
         final Map<String, dynamic> data = json.decode(response.body);
 
         setState(() {
-          ID = data['ID']; // Ensure 'ID' is correct in your backend response
-          Name = data['Name']; // Ensure 'Name' matches your backend field
-          totalDoctors = totalDoctors+int.parse(data['totalDoctors'].toString());
-          totalPatients = int.parse(data['totalPatients'].toString());
-          // Use data directly if already an int
+          ID = data['ID'].toString(); // Convert int to String
+          Name = data['Name'];
+          totalDoctors = data['totalDoctors'];
+          totalPatients = data['totalPatients'];
         });
       } else {
         throw Exception('Failed to load dashboard data');
@@ -44,6 +43,7 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
       _showErrorSnackBar('Error fetching data. Please try again later.');
     }
   }
+
 
 // Show error message in Snackbar
   void _showErrorSnackBar(String message) {
