@@ -27,4 +27,14 @@ public class OtpController {
 
         return twilioService.sendOtp(formattedPhoneNumber, otp);
     }
+
+    public String sendInfoWithUsername(String phoneNumber,String username, String link) {
+        String formattedPhoneNumber = "+91" + phoneNumber;
+
+        //String otp = otpService.generateOtp();
+
+        System.out.println("{Mobile no = "+phoneNumber+" Username = "+username+" Link = "+link+" }");
+
+        return twilioService.sendInfoWithUsername(formattedPhoneNumber, username, link);
+    }
 }

@@ -35,4 +35,17 @@ public class TwilioService {
             return "Error while sending OTP: " + e.getMessage();
         }
     }
+    public String sendInfoWithUsername(String toPhoneNumber, String username, String link) {
+        try {
+            Message message = Message.creator(
+                    new PhoneNumber(toPhoneNumber),   // To phone number
+                    new PhoneNumber(fromPhoneNumber), // From Twilio phone number
+                    "You have Successfully Registered. Your Username is " + username +" and here is link to login to your profile "+link            // Message content
+            ).create();
+
+            return "Username & Info sent successfully to " + toPhoneNumber;
+        } catch (Exception e) {
+            return "Error while sending OTP: " + e.getMessage();
+        }
+    }
 }

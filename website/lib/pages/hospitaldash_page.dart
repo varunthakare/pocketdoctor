@@ -183,7 +183,7 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
                           child: ElevatedButton(
                             onPressed: () {
                               // Add functionality for adding a doctor here
-                              _addDoctor();
+                              _addDoctor(ID,widget.username);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF4A8EFF),
@@ -276,10 +276,10 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
   }
 
   // Function to add a doctor (you can implement the functionality)
-  void _addDoctor() {
+  void _addDoctor(String Id,String username) {
      Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => AddDoctorPage()),
+      MaterialPageRoute(builder: (context) => AddDoctorPage(Id: Id,Username:username)),
     );
   }
 }

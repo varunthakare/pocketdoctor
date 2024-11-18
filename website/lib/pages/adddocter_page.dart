@@ -1,7 +1,24 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'hospitaldash_page.dart';
 
-class AddDoctorPage extends StatelessWidget {
+class AddDoctorPage extends StatefulWidget {
+  final String Id;
+  final String Username;
+
+  const AddDoctorPage({Key? key, required this.Id, required this.Username}) : super(key: key);
+
+  @override
+  _AddDoctorPageState createState() => _AddDoctorPageState();
+}
+
+class _AddDoctorPageState extends State<AddDoctorPage> {
+  TextEditingController doctorName = TextEditingController();
+  TextEditingController doctorQulification = TextEditingController();
+  TextEditingController doctorSpecialist = TextEditingController();
+  TextEditingController doctorMobileno = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,16 +45,21 @@ class AddDoctorPage extends StatelessWidget {
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 20),
-                      _buildTextField('Doctor Name'),
-                      _buildTextField('Qualification'),
-                      _buildTextField('Specialist'),
-                      _buildTextField('Mobile Number'),
+                      _buildTextField('Doctor Name', controller: doctorName),
+                      _buildTextField('Qualification', controller: doctorQulification),
+                      _buildTextField('Specialist', controller: doctorSpecialist),
+                      _buildTextField('Mobile Number', controller: doctorMobileno),
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
+                          _registerDoctor(
                             context,
-                            MaterialPageRoute(builder: (context) => HospitalDashPage(username: '',)),
+                            widget.Id,
+                            doctorName.text,
+                            doctorQulification.text,
+                            doctorSpecialist.text,
+                            doctorMobileno.text,
+                            widget.Username,
                           );
                         },
                         style: ElevatedButton.styleFrom(
@@ -63,26 +85,69 @@ class AddDoctorPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String hintText) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 10),
-    child: SizedBox(
-      width: 250, // Setting the width of the TextField
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: hintText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.blue.shade700),
+  Widget _buildTextField(String hintText, {required TextEditingController controller}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: SizedBox(
+        width: 250,
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(30),
+              borderSide: BorderSide(color: Colors.grey),
+            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide(color: Colors.blue.shade700),
-          ),
-          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
+
+  Future<void> _registerDoctor(BuildContext context, String id, String name, String qualification,
+      String specialist, String mobileNo, String username) async {
+
+    List<String> user = name.split(" ");
+
+    final url = Uri.parse('http://localhost:8585/api/doctor/add'); // Replace with your API URL
+    final body = jsonEncode({
+      'hospitalId': id,
+      'name': name,
+      "password":"x234hzwe",
+      "username":user[0]+"_"+id,
+      "verify":false,
+      'qualification': qualification,
+      'specialist': specialist,
+      'mobileno': mobileNo,
+    });
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Doctor registered successfully!')),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HospitalDashPage(username: username),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to register doctor: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 }

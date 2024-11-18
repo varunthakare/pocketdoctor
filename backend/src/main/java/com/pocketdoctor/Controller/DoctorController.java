@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,11 +40,13 @@ public class DoctorController {
     public ResponseEntity<DoctorData> addDoctor(@RequestBody DoctorData doctorData) {
 
         String otp = otpService.generateOtp();
+        
+        String link = "https";
 
         try {
             doctorData.setOtp(otp);
             DoctorData savedDoctor = doctorRepository.save(doctorData);
-            otpController.sendOtp(doctorData.getMobileno(), otp);
+            otpController.sendInfoWithUsername(doctorData.getMobileno(), doctorData.getUsername(),link);
             return new ResponseEntity<>(savedDoctor, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,5 +90,6 @@ public class DoctorController {
         }
         return new ResponseEntity<>("Wrong Password and username", HttpStatus.NO_CONTENT);
     }
+
 
 }
