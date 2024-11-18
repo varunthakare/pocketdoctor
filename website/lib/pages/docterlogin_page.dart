@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'docterdash_page.dart';
 import 'forgotpass_page.dart'; // Import the forgot password page
 
 class DocterLoginPage extends StatelessWidget {
@@ -145,6 +146,13 @@ class DocterLoginPage extends StatelessWidget {
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Login successful')),
+        );
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DocterDashPage(username: usernameText),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

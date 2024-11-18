@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DocterDashPage extends StatefulWidget {
-  const DocterDashPage({Key? key}) : super(key: key);
+
+  final String username;
+  const DocterDashPage({Key? key, required this.username}) : super(key: key);
 
   @override
   _DocterDashPageState createState() => _DocterDashPageState();
