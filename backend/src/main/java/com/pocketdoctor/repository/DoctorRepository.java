@@ -3,7 +3,11 @@ package com.pocketdoctor.repository;
 import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.model.PatientData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.print.Doc;
 import java.util.List;
@@ -21,4 +25,11 @@ public interface DoctorRepository extends JpaRepository<DoctorData, Integer> {
     Optional<DoctorData> findByMobileno(String mobile);
 
     int countByHospitalId(String hospitalId);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE DoctorData d SET d.password = :password WHERE d.username = :username AND d.hospitalId = :hospitalId")
+    int updatePassword(@Param("password") String password,
+                       @Param("username") String username,
+                       @Param("hospitalId") String hospitalId);
 }

@@ -28,10 +28,10 @@ public class PageController {
     }
 
     @PostMapping("/create-password/{username}")
-    public String createPassword(@PathVariable String username, @RequestParam String password, @RequestParam String password2, Model model) {
-
-        System.out.println("POST Method Hit - Username: " + username + ", Password1: " + password + ", Password2: " + password2);
-
+    public String createPassword(@PathVariable String username,
+                                 @RequestParam String password,
+                                 @RequestParam String password2,
+                                 Model model) {
         if (!password.equals(password2)) {
             model.addAttribute("username", username);
             model.addAttribute("error", "Passwords do not match.");
@@ -39,24 +39,18 @@ public class PageController {
         }
 
         String[] usernameParts = username.split("_");
-        List<DoctorData> doctor = doctorRepository.findByHospitalId(usernameParts[usernameParts.length - 1]);
+        //String user = usernameParts[0];
+        String hospitalId = usernameParts[usernameParts.length - 1];
 
-        if (doctor == null || doctor.isEmpty()) {
+        int rowsUpdated = doctorRepository.updatePassword(password, username, hospitalId);
+        if (rowsUpdated > 0) {
+            return "success";
+        } else {
             model.addAttribute("error", "User not found.");
             return "newpassword";
         }
-
-        for (DoctorData doc : doctor) {
-            if (doc.getUsername().equals(usernameParts[0]) && doc.getHospitalId().equals(usernameParts[usernameParts.length - 1])) {
-                doc.setPassword(password); // Update the password
-                doctorRepository.save(doc); // Save the updated user entity
-                return "success"; // Redirect to success page
-            }
-        }
-
-        model.addAttribute("error", "User not found.");
-        return "newpassword";
     }
+
 
 
 }
