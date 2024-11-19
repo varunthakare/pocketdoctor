@@ -41,7 +41,7 @@ public class DoctorController {
 
         String otp = otpService.generateOtp();
         
-        String link = "https";
+        String link = "http://localhost:8585/api/doctor/create-password/"+doctorData.getUsername();
 
         try {
             doctorData.setOtp(otp);
