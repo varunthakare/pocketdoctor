@@ -1,11 +1,72 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class DashboardPage extends StatefulWidget {
+
+  final String mobileno;
+
+  const DashboardPage({super.key, required this.mobileno});
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
 
+
 class _DashboardPageState extends State<DashboardPage> {
+
+  String name = "";
+  String id = "";
+  String mobileno = "";
+  dynamic appointment; // Use `dynamic` to handle potential null values
+
+  @override
+  void initState() {
+    super.initState();
+    //name = widget.name;
+    // Initialize timestamp
+    _fetchDashboardData();
+  }
+
+
+  Future<void> _fetchDashboardData() async {
+    final url = Uri.parse('http://localhost:8585/api/dashboard/${widget.mobileno}');
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+
+        setState(() {
+          // Access the nested 'data' object
+          final data = responseData['data'] ?? {};
+
+          // Safely extract values from 'data'
+          id = data['id']?.toString() ?? ""; // Convert to String or use an empty string
+          name = data['Name'] ?? "Unknown"; // Default to 'Unknown' if null
+          mobileno = data['mobileno'] ?? ""; // Default to an empty string if null
+
+          // Access the nested 'appointmentData' object
+          final appointmentData = data['appointmentData'] ?? {};
+          appointment = appointmentData['appointmentData'] ?? "No details available"; // Default value
+        });
+      } else {
+        throw Exception('Failed to load dashboard data');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+      //_showErrorSnackBar('Error fetching data. Please try again later.');
+    }
+  }
+
+
+
+
+
+
+
   int _selectedIndex = 0;  // Keeps track of the selected tab index
 
   // List of widgets for each tab content
@@ -39,7 +100,7 @@ class _DashboardPageState extends State<DashboardPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Good Day', style: TextStyle(color: Colors.black, fontSize: 16)),
-            Text('Shivam', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20)),
+            Text('$name', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 20)),
           ],
         ),
         actions: [

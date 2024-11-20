@@ -60,7 +60,7 @@ Future<void> verifyOtp(BuildContext context,String mobileNo, String otp) async {
       // Handle response data as needed
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DashboardPage()),
+        MaterialPageRoute(builder: (context) => DashboardPage(mobileno: mobileNo,)),
       );
     } else {
       print('Failed to verify OTP: ${response.statusCode}');

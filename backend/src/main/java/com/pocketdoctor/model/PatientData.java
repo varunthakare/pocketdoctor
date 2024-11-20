@@ -22,6 +22,10 @@ public class PatientData {
         return type;
     }
 
+    public Integer getId(){
+        return id;
+    }
+
     public void setType(String type) {
         this.type = "Patient";
     }

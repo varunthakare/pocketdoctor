@@ -1,6 +1,7 @@
 package com.pocketdoctor.repository;
 
 
+import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.model.PatientData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,6 +12,8 @@ public interface UserRepository extends JpaRepository<PatientData, Long> {
     Optional<PatientData> findByMobilenoAndOtp(String mobileno, String otp);
 
     Optional<PatientData> findByMobileno(String mobile);
+
+    //PatientData findByUsername(String username);
 
 
 }

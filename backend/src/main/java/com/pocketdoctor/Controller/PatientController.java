@@ -1,6 +1,9 @@
 package com.pocketdoctor.Controller;
 
+import com.pocketdoctor.model.Appointment;
+import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.model.PatientData;
+import com.pocketdoctor.services.AppointmentService;
 import com.pocketdoctor.services.OtpService;
 import com.pocketdoctor.services.UserServices;
 import com.pocketdoctor.utils.JwtUtil;
@@ -10,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,9 @@ public class PatientController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private AppointmentService appointmentService;
 
 
     @PostMapping("/login")
@@ -180,5 +187,24 @@ public class PatientController {
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
+
+    @GetMapping("/dashboard/{mobileno}")
+    public ResponseEntity<Map<String, Object>> getAllDeta(@PathVariable String mobileno) {
+        PatientData patientData = userServices.findByMobileNo(mobileno);
+        Appointment appointments = appointmentService.findByPatientId(String.valueOf(patientData.getId()));
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", patientData.getId());
+        data.put("Name", patientData.getName());
+        data.put("mobileno", patientData.getMobileno());
+        data.put("appointmentData", appointments); // Renamed to match Flutter parsing
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("data", data);
+
+        return ResponseEntity.ok(response);
+    }
+
 
 }

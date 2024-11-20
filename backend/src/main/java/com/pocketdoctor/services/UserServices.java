@@ -1,5 +1,6 @@
 package com.pocketdoctor.services;
 
+import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,8 @@ public class UserServices {
         return userRepository.findByMobileno(mobileno).orElse(null);
     }
 
-
+    //public PatientData findByUsername(String username){
+      //  return userRepository.findByUsername(username);
+    //}
 
 }

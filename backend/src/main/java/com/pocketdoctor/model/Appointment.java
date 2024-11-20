@@ -17,6 +17,8 @@ public class Appointment {
     String doctorId;
     String appointmentData;
 
+    public Appointment(){}
+
     public Appointment(Long id, String patientId, String hospitalId, String doctorId, String appointmentData) {
         this.appointmentId = id;
         this.patientId = patientId;

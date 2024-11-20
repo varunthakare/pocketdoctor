@@ -5,6 +5,9 @@ import com.pocketdoctor.repository.AppointmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class AppointmentService {
 
@@ -22,5 +25,8 @@ public class AppointmentService {
     }
     public int getTotalPatientsByHospital(String hospitalId) {
         return appointmentRepository.countByHospitalId(hospitalId);  // Assuming you have this query method in the repository
+    }
+    public Appointment findByPatientId(String patientId) {
+        return appointmentRepository.findByPatientId(patientId);
     }
 }
