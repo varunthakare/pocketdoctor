@@ -50,5 +50,8 @@ public class DoctorService {
         return doctorRepository.countByHospitalId(hospitalId);  // Assuming you have this query method in the repository
     }
 
+    public boolean isUsernameVerified(String username) {
+        return doctorRepository.existsByUsernameAndVerify(username, true);
+    }
 
 }

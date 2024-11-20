@@ -2,6 +2,7 @@ package com.pocketdoctor.Controller;
 
 import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.repository.DoctorRepository;
+import com.pocketdoctor.services.DoctorService;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,12 +20,24 @@ public class PageController {
     @Autowired
     private DoctorRepository doctorRepository;
 
+    @Autowired
+    private DoctorService doctorService;
+
 
     @GetMapping("/create-password/{username}")
     public String showCreatePasswordPageWithUsername(@PathVariable String username, Model model) {
-        String[] usernameParts = username.split("_");
-        model.addAttribute("username", username);
-        return "newpassword";
+        //String[] usernameParts = username.split("_");
+        boolean isVerified = doctorService.isUsernameVerified(username);
+
+        if (isVerified) {
+            // If verified, proceed to the password creation page
+            model.addAttribute("username", username);
+            return "newpassword";
+        } else {
+            // If not verified, redirect to an error page or show a message
+            model.addAttribute("error", "Username is not verified. Please verify your account.");
+            return "registered"; // Replace "error" with your error page name
+        }
     }
 
     @PostMapping("/create-password/{username}")

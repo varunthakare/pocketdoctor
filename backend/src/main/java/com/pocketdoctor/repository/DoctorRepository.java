@@ -26,9 +26,11 @@ public interface DoctorRepository extends JpaRepository<DoctorData, Integer> {
 
     int countByHospitalId(String hospitalId);
 
+    boolean existsByUsernameAndVerify(String username, boolean verify);
+
     @Transactional
     @Modifying
-    @Query("UPDATE DoctorData d SET d.password = :password WHERE d.username = :username AND d.hospitalId = :hospitalId")
+    @Query("UPDATE DoctorData d SET d.password = :password, d.verify = true WHERE d.username = :username AND d.hospitalId = :hospitalId")
     int updatePassword(@Param("password") String password,
                        @Param("username") String username,
                        @Param("hospitalId") String hospitalId);
