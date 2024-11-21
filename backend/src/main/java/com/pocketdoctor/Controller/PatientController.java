@@ -220,5 +220,23 @@ public class PatientController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/dashboard/city/{city}")
+    public ResponseEntity<Map<String,Object>> search(@PathVariable String city){
+
+        List<HospitalData> hospitalData = hospitalService.findByCity(city.toLowerCase());
+
+        Map<String,Object> data = new HashMap<>();
+
+        if(hospitalData != null) data.put("Hospitals",hospitalData);
+
+        else data.put("Hospitals","No data Found");
+
+        Map<String,Object> responce = new HashMap<>();
+
+        responce.put("data",data);
+
+        return ResponseEntity.ok(responce);
+
+    }
 
 }

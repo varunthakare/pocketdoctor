@@ -59,7 +59,7 @@ public class HospitalData {
     }
 
     public void setCity(String city) {
-        this.city = city;
+        this.city = city.toLowerCase();
     }
 
     @Override

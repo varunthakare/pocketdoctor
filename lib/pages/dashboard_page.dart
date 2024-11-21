@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'hospitaldash_page.dart';
-import 'signin_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardPage extends StatefulWidget {
   final String mobileno;
@@ -20,33 +17,21 @@ class _DashboardPageState extends State<DashboardPage> {
   String mobileno = "";
   dynamic appointment;
   late List<dynamic> hospitals = [];
+
   int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _loadStoredData(); // Load data on startup
-    _fetchDashboardData(); // Fetch fresh data from the server
+    _fetchDashboardData();
   }
 
-  // Load the data from SharedPreferences
-  Future<void> _loadStoredData() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      name = prefs.getString('name') ?? "";
-      id = prefs.getString('id') ?? "";
-      mobileno = prefs.getString('mobileno') ?? "";
-      hospitals = prefs.getString('hospitals') != null
-          ? List.from(json.decode(prefs.getString('hospitals')!))
-          : [];
-    });
-  }
-
-  // Fetch the dashboard data from the server
   Future<void> _fetchDashboardData() async {
-    final url = Uri.parse('http://192.168.31.230:8585/api/dashboard/${widget.mobileno}');
+    final url = Uri.parse('http://localhost:8585/api/dashboard/${widget.mobileno}');
+
     try {
       final response = await http.get(url);
+
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
 
@@ -58,13 +43,6 @@ class _DashboardPageState extends State<DashboardPage> {
           hospitals = data['Hospitals'] ?? [];
           appointment = data['appointmentData'];
         });
-
-        // Save the fetched data to SharedPreferences
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('name', name);
-        await prefs.setString('id', id);
-        await prefs.setString('mobileno', mobileno);
-        await prefs.setString('hospitals', json.encode(hospitals));
       } else {
         throw Exception('Failed to load dashboard data');
       }
@@ -73,17 +51,6 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  // Logout function
-  Future<void> _logout(BuildContext context) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', false); // Clear login status
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const SignInPage()),
-    );
-  }
-
-  // Function for bottom navigation bar item click
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -111,10 +78,6 @@ class _DashboardPageState extends State<DashboardPage> {
           ],
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout, color: Colors.black),
-            onPressed: () => _logout(context), // Call the logout function
-          ),
           IconButton(
             icon: Icon(Icons.notifications, color: Colors.black),
             onPressed: () {},
@@ -163,7 +126,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Method to create the active tab icon in bottom navigation
   Widget _buildActiveTabIcon(IconData icon, String label) {
     return SizedBox(
       width: 128,
@@ -185,7 +147,6 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Main content of the dashboard
   Widget _buildDashboardContent() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -223,81 +184,28 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Function to build a list of hospital cards
+// Function to build a list of hospital cards
   Widget _buildHospitalCards() {
+    // Check if hospitals data is not empty
     if (hospitals.isEmpty) {
       return Center(child: Text('No hospitals available'));
     }
 
     return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true, // Makes the list view scrollable without taking up extra space
+      physics: NeverScrollableScrollPhysics(), // Prevents scrolling of this list independently
       itemCount: hospitals.length,
       itemBuilder: (context, index) {
         final hospital = hospitals[index];
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HospitalDashPage(hospitalData: hospital),
-              ),
-            );
-          },
-          child: _buildHospitalCard(
-            hospital['name'] ?? 'Hospital Name',
-            hospital['address'] ?? 'Hospital Address',
-            'lib/images/signin_img.png',
-            hospital['rating']?.toString() ?? 'Not Rated', // Show rating
-          ),
+        return _buildHospitalCard(
+          hospital['name'] ?? 'Hospital Name',  // Assuming 'name' exists in each hospital map
+          hospital['address'] ?? 'Hospital Address',  // Assuming 'address' exists in each hospital map
+          'lib/images/signin_img.png',  // Placeholder image path
         );
       },
     );
   }
 
-  // Function to build a hospital card
-  Widget _buildHospitalCard(String name, String address, String imgPath, String rating) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade300,
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Image.asset(imgPath, width: 80, height: 80, fit: BoxFit.cover),
-          SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 0),
-              Text(address, style: TextStyle(fontSize: 14, color: Colors.grey)),
-              SizedBox(height: 0),
-              Row(
-                children: [
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star_half, color: Colors.amber, size: 16),
-                  ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Function to build an option card (Consult/Checkup)
   Widget _buildOptionCard(IconData icon, String title) {
     return Container(
       width: 150,
@@ -323,19 +231,24 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  // Function to build the search bar
   Widget _buildSearchBar() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Search for hospitals or services',
-        prefixIcon: Icon(Icons.search),
-        border: InputBorder.none,
-        contentPadding: EdgeInsets.symmetric(horizontal: 20),
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: TextField(
+        decoration: InputDecoration(
+          hintText: 'Search',
+          prefixIcon: Icon(Icons.search, color: Colors.grey),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 15),
+        ),
       ),
     );
   }
 
-  // Emergency button widget
   Widget _buildEmergencyButton(String title, IconData icon) {
     return Expanded(
       child: InkWell(
@@ -369,6 +282,56 @@ class _DashboardPageState extends State<DashboardPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildHospitalCard(String name, String timing, String imagePath) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade300,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: Image.asset(
+              imagePath,
+              height: 80,
+              width: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+          SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(timing, style: TextStyle(color: Colors.grey)),
+                Row(
+                  children: [
+                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.star_half, color: Colors.amber, size: 16),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        ],
       ),
     );
   }
