@@ -105,7 +105,7 @@ class _DashboardPageState extends State<DashboardPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.adb, color: Colors.grey),
             label: '',
-            activeIcon: _buildActiveTabIcon(Icons.calendar_today, 'Chatbot'),
+            activeIcon: _buildActiveTabIcon(Icons.adb, 'Chatbot'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.location_on, color: Colors.grey),
