@@ -67,7 +67,7 @@ class _DashboardPageState extends State<DashboardPage> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundImage: AssetImage('lib/images/signin_img.png'),
+            backgroundImage: AssetImage('lib/images/profile.png'),
           ),
         ),
         title: Column(
