@@ -12,12 +12,13 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
 }
 
-Future<void> sendOtp(String name,String email,String mobileno) async {
+Future<void> sendOtp(String name,String email,String mobileno,String city) async {
   final url = Uri.parse('http://localhost:8585/api/register');
   final body = json.encode(
       {
         "name":name,
         "email":email,
+        "city":city,
         "mobileno": mobileno
       });
 
@@ -80,6 +81,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController email = TextEditingController();
   final TextEditingController mobileno = TextEditingController();
   final TextEditingController otp = TextEditingController();
+  final TextEditingController city = TextEditingController();
 
   @override
   void initState() {
@@ -167,6 +169,21 @@ class _SignUpPageState extends State<SignUpPage> {
                             vertical: 12, horizontal: 16),
                       ),
                     ),
+                    const SizedBox(height: 30),
+                    // Name field
+                    TextField(
+                      controller: city,
+                      decoration: InputDecoration(
+                        labelText: 'City',
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: const Color(0xFF3254ED), // Border color same as background
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 12, horizontal: 16),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     // Mobile Number field
                     TextField(
@@ -190,7 +207,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: ElevatedButton(
                           onPressed: () {
 
-                            sendOtp(name.text,email.text,mobileno.text);
+                            sendOtp(name.text,email.text,mobileno.text,city.text);
                             setState(() {
                               _showOTPFields = true; // Show OTP fields when clicked
                             });

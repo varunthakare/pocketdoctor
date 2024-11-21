@@ -54,4 +54,9 @@ public class HospitalService {
     }
 
 
+    public List<HospitalData> findByCity(String city){
+        return hospitalRepository.findByCity(city);
+    }
+
+
 }

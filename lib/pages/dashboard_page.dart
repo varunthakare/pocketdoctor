@@ -1,10 +1,8 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class DashboardPage extends StatefulWidget {
-
   final String mobileno;
 
   const DashboardPage({super.key, required this.mobileno});
@@ -13,22 +11,20 @@ class DashboardPage extends StatefulWidget {
   _DashboardPageState createState() => _DashboardPageState();
 }
 
-
 class _DashboardPageState extends State<DashboardPage> {
-
   String name = "";
   String id = "";
   String mobileno = "";
-  dynamic appointment; // Use `dynamic` to handle potential null values
+  dynamic appointment;
+  late List<dynamic> hospitals = [];
+
+  int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    //name = widget.name;
-    // Initialize timestamp
     _fetchDashboardData();
   }
-
 
   Future<void> _fetchDashboardData() async {
     final url = Uri.parse('http://localhost:8585/api/dashboard/${widget.mobileno}');
@@ -40,46 +36,24 @@ class _DashboardPageState extends State<DashboardPage> {
         final Map<String, dynamic> responseData = json.decode(response.body);
 
         setState(() {
-          // Access the nested 'data' object
           final data = responseData['data'] ?? {};
-
-          // Safely extract values from 'data'
-          id = data['id']?.toString() ?? ""; // Convert to String or use an empty string
-          name = data['Name'] ?? "Unknown"; // Default to 'Unknown' if null
-          mobileno = data['mobileno'] ?? ""; // Default to an empty string if null
-
-          // Access the nested 'appointmentData' object
-          final appointmentData = data['appointmentData'] ?? {};
-          appointment = appointmentData['appointmentData'] ?? "No details available"; // Default value
+          id = data['id']?.toString() ?? "";
+          name = data['Name'] ?? "Unknown";
+          mobileno = data['mobileno'] ?? "";
+          hospitals = data['Hospitals'] ?? [];
+          appointment = data['appointmentData'];
         });
       } else {
         throw Exception('Failed to load dashboard data');
       }
     } catch (e) {
       print('Error fetching data: $e');
-      //_showErrorSnackBar('Error fetching data. Please try again later.');
     }
   }
 
-
-
-
-
-
-
-  int _selectedIndex = 0;  // Keeps track of the selected tab index
-
-  // List of widgets for each tab content
-  final List<Widget> _pages = [
-    DashboardContent(), // Home Tab content
-    AppointmentsContent(), // Appointments Tab content
-    NearbyContent(), // Nearby Tab content
-    HistoryContent(), // History Tab content
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index; // Update the selected index
+      _selectedIndex = index;
     });
   }
 
@@ -93,7 +67,7 @@ class _DashboardPageState extends State<DashboardPage> {
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
-            backgroundImage: AssetImage('lib/images/signin_img.png'), // Replace with your image path
+            backgroundImage: AssetImage('lib/images/signin_img.png'),
           ),
         ),
         title: Column(
@@ -110,10 +84,18 @@ class _DashboardPageState extends State<DashboardPage> {
           ),
         ],
       ),
-      body: _pages[_selectedIndex],  // Dynamically change the body content
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          _buildDashboardContent(),
+          Center(child: Text("Appointments Content")),
+          Center(child: Text("Nearby Content")),
+          Center(child: Text("History Content")),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,  // Update the active tab
-        onTap: _onItemTapped,  // Handle tab item click
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.grey),
@@ -152,7 +134,7 @@ class _DashboardPageState extends State<DashboardPage> {
           color: Colors.blue,
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: EdgeInsets.only(top: 4, left: 8, right: 8, bottom: 4), 
+        padding: EdgeInsets.only(top: 4, left: 8, right: 8, bottom: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -164,11 +146,8 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-}
 
-class DashboardContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildDashboardContent() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: ListView(
@@ -198,11 +177,32 @@ class DashboardContent extends StatelessWidget {
             ],
           ),
           SizedBox(height: 16),
-          _buildHospitalCard('Apollo Hospitals Nashik', '24 hr', 'lib/images/signin_img.png'),
-          _buildHospitalCard('Lokmanya Multi-Speciality\nand Accident Hospital Nashik', '24 hr', 'lib/images/signin_img.png'),
-          _buildHospitalCard('Starcare Multi-Speciality Hospital', '24 hr', 'lib/images/signin_img.png'),
+          // Displaying hospitals list as cards
+          _buildHospitalCards(),
         ],
       ),
+    );
+  }
+
+// Function to build a list of hospital cards
+  Widget _buildHospitalCards() {
+    // Check if hospitals data is not empty
+    if (hospitals.isEmpty) {
+      return Center(child: Text('No hospitals available'));
+    }
+
+    return ListView.builder(
+      shrinkWrap: true, // Makes the list view scrollable without taking up extra space
+      physics: NeverScrollableScrollPhysics(), // Prevents scrolling of this list independently
+      itemCount: hospitals.length,
+      itemBuilder: (context, index) {
+        final hospital = hospitals[index];
+        return _buildHospitalCard(
+          hospital['name'] ?? 'Hospital Name',  // Assuming 'name' exists in each hospital map
+          hospital['address'] ?? 'Hospital Address',  // Assuming 'address' exists in each hospital map
+          'lib/images/signin_img.png',  // Placeholder image path
+        );
+      },
     );
   }
 
@@ -252,11 +252,9 @@ class DashboardContent extends StatelessWidget {
   Widget _buildEmergencyButton(String title, IconData icon) {
     return Expanded(
       child: InkWell(
-        onTap: () {
-          // Add your button press logic here
-        },
-        splashColor: const Color.fromARGB(255, 116, 118, 119).withOpacity(0.2), // The overlay color when pressed
-        borderRadius: BorderRadius.circular(16), // Match the Container's border radius
+        onTap: () {},
+        splashColor: Colors.grey.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(16),
         child: Container(
           height: 100,
           margin: EdgeInsets.only(right: 8),
@@ -326,66 +324,15 @@ class DashboardContent extends StatelessWidget {
                     Icon(Icons.star, color: Colors.amber, size: 16),
                     Icon(Icons.star, color: Colors.amber, size: 16),
                     Icon(Icons.star, color: Colors.amber, size: 16),
-                    Icon(Icons.star, color: Colors.amber, size: 16),
                     Icon(Icons.star_half, color: Colors.amber, size: 16),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton.icon(
-                      icon: Icon(Icons.account_circle, color: Colors.blue),
-                      label: Text(
-                        'See\nDoctors',
-                        style: TextStyle(color: Colors.blue),
-                        textAlign: TextAlign.center, // Center the text
-                      ),
-                      onPressed: () {},
-                    ),
-                    ElevatedButton.icon(
-                      icon: Icon(Icons.calendar_today, color: Colors.white),
-                      label: Text(
-                        'Get\nAppointment',
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center, // Center the text
-                      ),
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 8), // Reduce right-side padding
-                      ),
-                    ),
                   ],
                 ),
               ],
             ),
           ),
+          Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
         ],
       ),
     );
-  }
-}
-
-class AppointmentsContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("Appointments Content"));
-  }
-}
-
-class NearbyContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("Nearby Content"));
-  }
-}
-
-class HistoryContent extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(child: Text("History Content"));
   }
 }

@@ -12,6 +12,7 @@ class HospitalLoginPage extends StatelessWidget {
   final TextEditingController loginUsernameController = TextEditingController();
   final TextEditingController loginPasswordController = TextEditingController();
   final TextEditingController bedsController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,8 @@ class HospitalLoginPage extends StatelessWidget {
                     _buildTextField('Hospital Name', controller: nameController),
                     SizedBox(height: 15),
                     _buildTextField('Complete Address', controller: addressController),
+                    SizedBox(height: 15),
+                    _buildTextField('City', controller: cityController),
                     SizedBox(height: 15),
                     _buildAttachmentField('Attach License'),
                     SizedBox(height: 25),
@@ -183,6 +186,7 @@ class HospitalLoginPage extends StatelessWidget {
     final String password = passwordController.text;
     final String address = addressController.text;
     final String beds = bedsController.text;
+    final String city = cityController.text;
 
     if (name.isEmpty || username.isEmpty || password.isEmpty || address.isEmpty || beds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -196,6 +200,7 @@ class HospitalLoginPage extends StatelessWidget {
       "username": username,
       "password": password,
       "address": address,
+      "city":city,
       "beds": beds,
       "verify": false
     };

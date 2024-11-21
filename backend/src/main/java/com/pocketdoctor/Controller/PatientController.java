@@ -2,8 +2,10 @@ package com.pocketdoctor.Controller;
 
 import com.pocketdoctor.model.Appointment;
 import com.pocketdoctor.model.DoctorData;
+import com.pocketdoctor.model.HospitalData;
 import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.services.AppointmentService;
+import com.pocketdoctor.services.HospitalService;
 import com.pocketdoctor.services.OtpService;
 import com.pocketdoctor.services.UserServices;
 import com.pocketdoctor.utils.JwtUtil;
@@ -39,6 +41,9 @@ public class PatientController {
 
     @Autowired
     private AppointmentService appointmentService;
+
+    @Autowired
+    private HospitalService hospitalService;
 
 
     @PostMapping("/login")
@@ -128,6 +133,7 @@ public class PatientController {
             userServices.saveUser(patientData);
 
             System.out.println(otp);
+            System.out.println(patientData.getCity());
 
 
 
@@ -193,11 +199,19 @@ public class PatientController {
         PatientData patientData = userServices.findByMobileNo(mobileno);
         Appointment appointments = appointmentService.findByPatientId(String.valueOf(patientData.getId()));
 
+        List<HospitalData> hospitalData = hospitalService.findByCity(patientData.getCity());
+
         Map<String, Object> data = new HashMap<>();
         data.put("id", patientData.getId());
         data.put("Name", patientData.getName());
         data.put("mobileno", patientData.getMobileno());
-        data.put("appointmentData", appointments); // Renamed to match Flutter parsing
+        data.put("city",patientData.getCity());
+
+        if(appointments != null) data.put("appointmentData", appointments);
+        else data.put("appointmentData", "No Appointment");
+
+        if(hospitalData != null) data.put("Hospitals", hospitalData);
+        else data.put("Hospitals", "No Hospital near by ur city");
 
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
