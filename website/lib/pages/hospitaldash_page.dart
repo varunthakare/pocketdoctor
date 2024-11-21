@@ -23,7 +23,7 @@ class _HospitalDashPageState extends State<HospitalDashPage> {
 
   // Fetch data from the backend API
   Future<void> _fetchDashboardData() async {
-    final url = Uri.parse('http://localhost:8585/api/hospitals/dashboard/${widget.username}');
+    final url = Uri.parse('http://192.168.31.230:8585/api/hospitals/dashboard/${widget.username}');
 
     try {
       final response = await http.get(url);

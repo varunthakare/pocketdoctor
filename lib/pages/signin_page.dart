@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
 import 'dashboard_page.dart';
@@ -13,7 +13,7 @@ class SignInPage extends StatefulWidget {
 }
 
 Future<void> sendOtp(String mobileno) async {
-  final url = Uri.parse('http://localhost:8585/api/login');
+  final url = Uri.parse('http://192.168.31.230:8585/api/login');
   final body = json.encode(
       {
         "mobileno": mobileno
@@ -42,7 +42,7 @@ Future<void> sendOtp(String mobileno) async {
 }
 
 Future<void> verifyOtp(BuildContext context,String mobileNo, String otp) async {
-  final url = Uri.parse('http://localhost:8585/api/login/otp-verify');
+  final url = Uri.parse('http://192.168.31.230:8585/api/login/otp-verify');
   final body = json.encode({"mobileno": mobileNo, "otp": otp});
 
   try {
@@ -57,6 +57,9 @@ Future<void> verifyOtp(BuildContext context,String mobileNo, String otp) async {
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       print('OTP verification successful: $responseData');
+
+      final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
       // Handle response data as needed
       Navigator.push(
         context,

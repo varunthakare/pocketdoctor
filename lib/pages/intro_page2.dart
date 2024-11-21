@@ -1,26 +1,43 @@
 import 'package:flutter/material.dart';
 import 'signin_page.dart';
 import 'signup_page.dart';
+import 'dashboard_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class IntroPage2 extends StatelessWidget {
   const IntroPage2({super.key});
 
+  Future<bool> _checkLoginStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('isLoggedIn') ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Background Image
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('lib/images/intro2_img.png'), // Ensure the image path is correct
-                fit: BoxFit.cover, // Ensures the image covers the entire screen
-              ),
-            ),
-          ),
-          // Buttons
-          Container(
+    return FutureBuilder<bool>(
+      future: _checkLoginStatus(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else if (snapshot.hasData && snapshot.data == true) {
+          return const DashboardPage(mobileno: ''); // Redirect to Dashboard if logged in
+        } else {
+          return Scaffold(
+            body: Stack(
+              children: [
+                // Background Image
+                Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('lib/images/intro2_img.png'), // Ensure the image path is correct
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                // Buttons
+                Container(
             margin: const EdgeInsets.only(top: 687), // Add top margin
             child: Center(
               child: Row(
@@ -109,8 +126,11 @@ class IntroPage2 extends StatelessWidget {
               ),
             ),
           ),
-        ],
-      ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 }
