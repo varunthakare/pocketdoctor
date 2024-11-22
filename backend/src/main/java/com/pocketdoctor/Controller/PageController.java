@@ -28,6 +28,7 @@ public class PageController {
     public String showCreatePasswordPageWithUsername(@PathVariable String username, Model model) {
         //String[] usernameParts = username.split("_");
         boolean isVerified = doctorService.isUsernameVerified(username);
+        System.out.println(isVerified);
 
         if (isVerified) {
             // If verified, proceed to the password creation page
@@ -36,7 +37,7 @@ public class PageController {
         } else {
             // If not verified, redirect to an error page or show a message
             model.addAttribute("error", "Username is not verified. Please verify your account.");
-            return "registered"; // Replace "error" with your error page name
+            return "newpassword"; // Replace "error" with your error page name
         }
     }
 

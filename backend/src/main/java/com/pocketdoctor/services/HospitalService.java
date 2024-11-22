@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HospitalService {
@@ -56,6 +57,13 @@ public class HospitalService {
 
     public List<HospitalData> findByCity(String city){
         return hospitalRepository.findByCity(city);
+    }
+    public List<HospitalData> findByName(String name){
+        return hospitalRepository.findByName(name);
+    }
+
+    public Optional<HospitalData> findById(Integer id){
+        return hospitalRepository.findById(id);
     }
 
 

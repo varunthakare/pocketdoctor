@@ -16,7 +16,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   String name = "";
-  String id = "";
+  String hospitalId = "";
   String mobileno = "";
   dynamic appointment;
   late List<dynamic> hospitals = [];
@@ -34,18 +34,28 @@ class _DashboardPageState extends State<DashboardPage> {
 
   // Load the data from SharedPreferences
   Future<void> _loadStoredData() async {
+
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       name = prefs.getString('name') ?? "";
-      city = prefs.getString('city') ?? "";
-      id = prefs.getString('id') ?? "";
-      mobileno = widget.mobileno;
+      //city = prefs.getString('city') ?? "";
+      //hospitalId = prefs.getString('id') ?? "";
+      mobileno = prefs.getString('mobileno') ?? "";
 
     });
+    print('$name');
+    print('$city');
+    print('$mobileno');
+
+    _fetchDashboardData();
+
   }
 
   // Fetch the dashboard data from the server
   Future<void> _fetchDashboardData() async {
+    print(mobileno);
+
+    //final url = Uri.parse('http://localhost:8585/api/dashboard/${mobileno}');
     final url = Uri.parse('http://localhost:8585/api/dashboard/${widget.mobileno}');
     try {
       final response = await http.get(url);
@@ -54,7 +64,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
         setState(() {
           final data = responseData['data'] ?? {};
-          id = data['id']?.toString() ?? "";
+          hospitalId = data['id']?.toString() ?? "";
           name = data['Name'] ?? "Unknown";
           mobileno = data['mobileno'] ?? "";
           hospitals = data['Hospitals'] ?? [];
@@ -65,7 +75,7 @@ class _DashboardPageState extends State<DashboardPage> {
         // Save the fetched data to SharedPreferences
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('name', name);
-        await prefs.setString('id', id);
+        //await prefs.setString('id', hospitalId);
         await prefs.setString('mobileno', mobileno);
         await prefs.setString('hospitals', json.encode(hospitals));
       } else {
@@ -254,6 +264,8 @@ class _DashboardPageState extends State<DashboardPage> {
       return Center(child: Text('No hospitals available'));
     }
 
+    print(hospitalId);
+
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -265,7 +277,8 @@ class _DashboardPageState extends State<DashboardPage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HospitalDashPage(hospitalData: hospital),
+
+                builder: (context) => HospitalDashPage(hospitalId: hospital['id'].toString(),hospitalName: hospital['name'], address: hospital['address']),
               ),
             );
           },

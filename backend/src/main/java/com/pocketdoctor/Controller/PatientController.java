@@ -4,19 +4,15 @@ import com.pocketdoctor.model.Appointment;
 import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.model.HospitalData;
 import com.pocketdoctor.model.PatientData;
-import com.pocketdoctor.services.AppointmentService;
-import com.pocketdoctor.services.HospitalService;
-import com.pocketdoctor.services.OtpService;
-import com.pocketdoctor.services.UserServices;
+import com.pocketdoctor.services.*;
 import com.pocketdoctor.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,16 +216,21 @@ public class PatientController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/dashboard/city/{city}")
-    public ResponseEntity<Map<String,Object>> search(@PathVariable String city){
+    @GetMapping("/dashboard/city/{search}")
+    public ResponseEntity<Map<String,Object>> search(@PathVariable String search){
 
-        List<HospitalData> hospitalData = hospitalService.findByCity(city.toLowerCase());
+        List<HospitalData> hospitalData = new ArrayList<>();
+        hospitalData.addAll(hospitalService.findByName(search.toLowerCase()));
+        hospitalData.addAll(hospitalService.findByCity(search.toLowerCase()));
 
         Map<String,Object> data = new HashMap<>();
 
-        if(hospitalData != null) data.put("Hospitals",hospitalData);
+        if(hospitalData != null) {
 
-        else data.put("Hospitals","No data Found");
+            data.put("Hospitals",hospitalData);
+
+
+        } else data.put("Hospitals","No data Found");
 
         Map<String,Object> responce = new HashMap<>();
 
@@ -238,5 +239,28 @@ public class PatientController {
         return ResponseEntity.ok(responce);
 
     }
+    @Autowired
+    DoctorService doctorService;
+
+    @GetMapping("/dashboard/doctor/{hospitalId}")
+    public ResponseEntity<Map<String, Object>> getDataHospital(@PathVariable String hospitalId) {
+        List<DoctorData> doctorData = hospitalService.getDoctorsByHospitalId(hospitalId);
+
+        List<Map<String, String>> doctors = new ArrayList<>();
+        for (DoctorData doctor : doctorData) {
+            if (doctor.isVerify()) {
+                Map<String, String> doctorInfo = new HashMap<>();
+                doctorInfo.put("name", doctor.getName());
+                doctorInfo.put("qualification", doctor.getQualification());
+                doctorInfo.put("specialist", doctor.getSpecialist());
+                doctors.add(doctorInfo);
+            }
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", doctors);
+        return ResponseEntity.ok(response);
+    }
+
 
 }
