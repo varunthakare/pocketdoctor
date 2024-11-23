@@ -1,8 +1,13 @@
+<img src="screenshoot/logo.png" width="100%" >
+
 # Pocket Doctor - Healthcare Appointment & Emergency Service
 
-## Overview
 
-Pocket Doctor is a healthcare management application that allows users to book doctor appointments, access medical history, and request emergency ambulance services. The app aims to simplify healthcare processes, enhance patient experience, and provide timely assistance in emergencies. It is built using Flutter for the mobile app and Spring Boot for the backend.
+## Overview
+<img src="screenshoot/Intro.png" width="200" align="right">
+Pocket Doctor is a healthcare management application that allows users to book doctor appointments, access medical history, and request emergency ambulance services. The app aims to simplify healthcare processes, enhance patient experience, and provide timely assistance in emergencies. It is built using Flutter for the mobile app and Spring Boot for the backend. 
+<br>
+<br>
 
 ## Key Features
 - Doctor Appointment Scheduling: Patients can book appointments with doctors based on availability, with real-time confirmation.
@@ -13,7 +18,10 @@ Pocket Doctor is a healthcare management application that allows users to book d
 
 - Fraud Detection (AI-powered): An AI-powered feature to help users detect potential fraud or suspicious activity related to their medical services.
 
+<img src="screenshoot/Home.png" width="500">
+
 ## Tech Stack:
+<img src="screenshoot/login.png" width="200" align="right">
 
 - Frontend: Flutter for building cross-platform mobile applications with a native performance.
 
@@ -25,6 +33,7 @@ Pocket Doctor is a healthcare management application that allows users to book d
 
 - Others: Firebase for push notifications, Google Maps API for location-based services, Twilio for SMS notifications.
 
+<br>
 
 ## Contributors
 
@@ -105,6 +114,8 @@ Pocket Doctor is a healthcare management application that allows users to book d
 
 - Utilizes AI-powered algorithms to analyze user interactions and detect potential fraudulent activities or suspicious patterns related to healthcare services.
 - Helps ensure the integrity of the system and prevents misuse of medical resources.
+
+<img src="screenshoot/doctor.png" width="500"><img src="screenshoot/hospital.png" width="500"> 
 
 ## Acknowledgements
 - Google Maps API: For ambulance location tracking and map integration.
