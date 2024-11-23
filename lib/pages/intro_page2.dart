@@ -22,7 +22,7 @@ class IntroPage2 extends StatelessWidget {
             body: Center(child: CircularProgressIndicator()),
           );
         } else if (snapshot.hasData && snapshot.data == true) {
-          return const DashboardPage(mobileno: ''); // Redirect to Dashboard if logged in
+          return const DashboardPage(mobilenopref: ''); // Redirect to Dashboard if logged in
         } else {
           return Scaffold(
             body: Stack(

@@ -6,9 +6,9 @@ import 'signin_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardPage extends StatefulWidget {
-  final String mobileno;
+  final String mobilenopref;
 
-  const DashboardPage({super.key, required this.mobileno});
+  const DashboardPage({super.key, required this.mobilenopref});
 
   @override
   _DashboardPageState createState() => _DashboardPageState();
@@ -21,16 +21,28 @@ class _DashboardPageState extends State<DashboardPage> {
   dynamic appointment;
   late List<dynamic> hospitals = [];
   int _selectedIndex = 0;
-  String city = "";
+  late List<dynamic> usedData = [];
+  String userCity = "";
 
   TextEditingController _searchController = new TextEditingController();
+
+  String mobilenopref = "";
 
   @override
   void initState() {
     super.initState();
-    _loadStoredData(); // Load data on startup
-    _fetchDashboardData(); // Fetch fresh data from the server
+    _initializeData(); // Combine both SharedPreferences loading and server call
   }
+
+  Future<void> _initializeData() async {
+
+
+    await _loadStoredData();
+    mobilenopref = widget.mobilenopref;
+    _fetchDashboardData(); // Call once after loading stored data
+
+  }
+
 
   // Load the data from SharedPreferences
   Future<void> _loadStoredData() async {
@@ -40,11 +52,13 @@ class _DashboardPageState extends State<DashboardPage> {
       name = prefs.getString('name') ?? "";
       //city = prefs.getString('city') ?? "";
       //hospitalId = prefs.getString('id') ?? "";
-      mobileno = prefs.getString('mobileno') ?? "";
+      mobilenopref = prefs.getString('mobileno') ?? "";
+
 
     });
+    print('$mobilenopref');
     print('$name');
-    print('$city');
+    print('$userCity');
     print('$mobileno');
 
     _fetchDashboardData();
@@ -53,10 +67,12 @@ class _DashboardPageState extends State<DashboardPage> {
 
   // Fetch the dashboard data from the server
   Future<void> _fetchDashboardData() async {
-    print(mobileno);
+    //print(mobileno);
+
+    //print(widget.mobileno);
 
     //final url = Uri.parse('http://localhost:8585/api/dashboard/${mobileno}');
-    final url = Uri.parse('http://localhost:8585/api/dashboard/${widget.mobileno}');
+    final url = Uri.parse('http://localhost:8585/api/dashboard/${mobilenopref}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -68,7 +84,8 @@ class _DashboardPageState extends State<DashboardPage> {
           name = data['Name'] ?? "Unknown";
           mobileno = data['mobileno'] ?? "";
           hospitals = data['Hospitals'] ?? [];
-          //city = data['city'];
+          usedData = data['Hospitals'] ?? [];
+          userCity = data['city'];
           appointment = data['appointmentData'];
         });
 
@@ -84,6 +101,7 @@ class _DashboardPageState extends State<DashboardPage> {
     } catch (e) {
       print('Error fetching data: $e');
     }
+    print('$usedData');
   }
 
   Future<void> _fetchSearchData(String city) async {
@@ -264,7 +282,7 @@ class _DashboardPageState extends State<DashboardPage> {
       return Center(child: Text('No hospitals available'));
     }
 
-    print(hospitalId);
+    //print(hospitalId);
 
     return ListView.builder(
       shrinkWrap: true,
@@ -385,8 +403,16 @@ class _DashboardPageState extends State<DashboardPage> {
           } else {
 
 
-              _fetchDashboardData();
+              //hospitals = usedData;
+
+              print('$usedData');
               print('$hospitals');
+             // _buildHospitalCards();
+              //_fetchDashboardData();
+              Future.delayed(Duration(milliseconds: 300), () {
+                _fetchSearchData(userCity);
+              });
+              print('$userCity');
 
           }
         },
