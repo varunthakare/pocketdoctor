@@ -31,7 +31,7 @@ Pocket Doctor is a healthcare management application that allows users to book d
 
 [![Shivam-Thorat](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/99466385?v=4&w=150&h=150&mask=circle)](https://github.com/shivammm21)
 [![Varun-Thakare](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/160563687?v=4&w=150&h=150&mask=circle)](https://github.com/varunthakare)
-[![Pranit-Dhumal](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/160817394?s=64&v=4&w=150&h=150&mask=circle)](https://github.com/PranitDhumal08)
+[![Pranit-Dhumal](https://images.weserv.nl/?url=avatars.githubusercontent.com/u/160817394?s=400&u=2518fd8e24f96bb568df44ba1c81ee6ed1ccd51f&v=4&w=150&h=150&mask=circle)](https://github.com/PranitDhumal08)
 
 ## Installation
 ### Prerequisites
