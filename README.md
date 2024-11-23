@@ -115,7 +115,7 @@ Pocket Doctor is an easy-to-use healthcare management app that helps users book 
 - Utilizes AI-powered algorithms to analyze user interactions and detect potential fraudulent activities or suspicious patterns related to healthcare services.
 - Helps ensure the integrity of the system and prevents misuse of medical resources.
 
-<img src="screenshoot/doctor.png" width="50%"><img src="screenshoot/hospital.png" width="50%"> 
+<img src="screenshoot/doctor.png" width="50%" height="50%"><img src="screenshoot/hospital.png" width="50%" height="50%"> 
 
 ## Acknowledgements
 - Google Maps API: For ambulance location tracking and map integration.
