@@ -5,9 +5,9 @@
 
 ## Overview
 <img src="screenshoot/Intro.png" width="200" align="right">
-Pocket Doctor is a healthcare management application that allows users to book doctor appointments, access medical history, and request emergency ambulance services. The app aims to simplify healthcare processes, enhance patient experience, and provide timely assistance in emergencies. It is built using Flutter for the mobile app and Spring Boot for the backend. 
-<br>
-<br>
+
+Pocket Doctor is an easy-to-use healthcare management app that helps users book doctor appointments, access their medical history, and request emergency ambulance services. It allows users to book appointments with doctors at convenient times, reducing waiting time. The app also lets users, especially senior citizens, store and view their medical records, making it easier for doctors to provide better care. In case of emergencies, the app has a one-tap ambulance booking feature that quickly finds and sends the nearest ambulance to the user’s location. Pocket Doctor aims to make healthcare processes simpler, improve patient experiences, and provide fast help during emergencies. The app is built using Flutter for the mobile interface and Spring Boot for the backend, ensuring smooth and reliable performance. 
+
 
 ## Key Features
 - Doctor Appointment Scheduling: Patients can book appointments with doctors based on availability, with real-time confirmation.
