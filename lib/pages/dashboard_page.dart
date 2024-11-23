@@ -328,25 +328,36 @@ class _DashboardPageState extends State<DashboardPage> {
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.asset(imgPath, width: 80, height: 80, fit: BoxFit.cover),
           SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 0),
-              Text(address, style: TextStyle(fontSize: 14, color: Colors.grey)),
-              SizedBox(height: 0),
-              Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star, color: Colors.amber, size: 16),
-                  Icon(Icons.star_half, color: Colors.amber, size: 16),
-                ],
-              ),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 0),
+                Text(
+                  address,
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  maxLines: null, // Allows text to wrap into multiple lines
+                  overflow: TextOverflow.visible,
+                ),
+                SizedBox(height: 0),
+                Row(
+                  children: [
+                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.star, color: Colors.amber, size: 16),
+                    Icon(Icons.star_half, color: Colors.amber, size: 16),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
