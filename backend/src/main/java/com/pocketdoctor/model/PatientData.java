@@ -2,6 +2,7 @@ package com.pocketdoctor.model;
 
 
 import jakarta.persistence.*;
+import lombok.Setter;
 
 import java.util.Objects;
 
@@ -18,6 +19,8 @@ public class PatientData {
     String mobileno;
     String otp;
     String type = "Patient";
+
+
 
     public PatientData() {
 
