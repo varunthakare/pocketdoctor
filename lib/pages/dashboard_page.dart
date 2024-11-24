@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'hospitaldash_page.dart';
 import 'signin_page.dart';
+import 'profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -128,6 +129,33 @@ class _DashboardPageState extends State<DashboardPage> {
 
   // Logout function
   Future<void> _logout(BuildContext context) async {
+  // Show confirmation dialog
+  final confirmLogout = await showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Confirm Logout'),
+        content: Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // User cancels logout
+            },
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // User confirms logout
+            },
+            child: Text('Logout'),
+          ),
+        ],
+      );
+    },
+  );
+
+  // If the user confirms, proceed with logout
+  if (confirmLogout == true) {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isLoggedIn', false); // Clear login status
     Navigator.pushReplacement(
@@ -135,6 +163,7 @@ class _DashboardPageState extends State<DashboardPage> {
       MaterialPageRoute(builder: (context) => const SignInPage()),
     );
   }
+}
 
   // Function for bottom navigation bar item click
   void _onItemTapped(int index) {
@@ -151,11 +180,19 @@ class _DashboardPageState extends State<DashboardPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to ProfilePage
+            );
+          },
           child: CircleAvatar(
             backgroundImage: AssetImage('lib/images/profile.png'),
           ),
         ),
+      ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
