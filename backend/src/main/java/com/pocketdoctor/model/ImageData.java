@@ -1,10 +1,7 @@
 package com.pocketdoctor.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import jakarta.persistence.Id; // Correct import for JPA
 
 
@@ -22,10 +19,16 @@ public class ImageData {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Getter
+    private String userType;
     private String type;
 
     @Lob
-    @Column(name = "image_data", columnDefinition = "BLOB", nullable = false)
+    @Column(name = "image_data", columnDefinition = "LONGBLOB", nullable = false)
     private byte[] imageData;
+
+    public void setUserType(String userType) {
+        this.userType = userType.toLowerCase();
+    }
 }
 
