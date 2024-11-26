@@ -10,28 +10,28 @@ Pocket Doctor is an easy-to-use healthcare management app that helps users book 
 
 
 ## Key Features
-- Doctor Appointment Scheduling: Patients can book appointments with doctors based on availability, with real-time confirmation.
+- Doctor Appointment Scheduling - Patients can book appointments with doctors based on availability, with real-time confirmation.
 
-- One-Tap Emergency Ambulance Service: Users can request emergency ambulances, with automatic dispatch based on the user's location.
+- One-Tap Emergency Ambulance Service - Users can request emergency ambulances, with automatic dispatch based on the user's location.
 
-- Comprehensive Medical History: A feature for senior citizens to maintain a digital medical history, allowing doctors to access critical health information for effective treatment.
+- Comprehensive Medical History - A feature for senior citizens to maintain a digital medical history, allowing doctors to access critical health information for effective treatment.
 
-- Fraud Detection (AI-powered): An AI-powered feature to help users detect potential fraud or suspicious activity related to their medical services.
+- Fraud Detection (AI-powered) - An AI-powered feature to help users detect potential fraud or suspicious activity related to their medical services.
 
 <img src="screenshoot/Home.png" width="100%">
 
 ## Tech Stack:
 <img src="screenshoot/login.png" width="200" align="right">
 
-- Frontend: Flutter for building cross-platform mobile applications with a native performance.
+- Frontend - Flutter for building cross-platform mobile applications with a native performance.
 
-- Backend: Spring Boot for creating robust and scalable RESTful APIs.
+- Backend - Spring Boot for creating robust and scalable RESTful APIs.
 
-- Database: MySQL for relational data storage.
+- Database - MySQL for relational data storage.
 
-- AI: Machine learning algorithms for fraud detection and analysis.
+- AI - Machine learning algorithms for fraud detection and analysis.
 
-- Others: Firebase for push notifications, Google Maps API for location-based services, Twilio for SMS notifications.
+- Firebase for push notifications, Google Maps API for location-based services, Twilio for SMS notifications.
 
 <br>
 
