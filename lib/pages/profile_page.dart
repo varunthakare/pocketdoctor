@@ -1,9 +1,16 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dashboard_page.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class ProfilePage extends StatefulWidget {
+
+  final String userId;
+
+  const ProfilePage({super.key, required this.userId});
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -13,6 +20,39 @@ class _ProfilePageState extends State<ProfilePage> {
   File? _profileImage; // To store the selected profile image
 
   final ImagePicker _picker = ImagePicker(); // Image picker instance
+
+
+  Future<void> uploadData(File? file, String userId, String userType) async {
+    if (file == null) {
+      print('No file selected');
+      return; // Exit the function if the file is null
+    }
+
+    final url = Uri.parse('http://localhost:8585/image/upload');
+
+    try {
+      final request = http.MultipartRequest('POST', url)
+        ..fields['userId'] = userId
+        ..fields['userType'] = userType
+        ..files.add(await http.MultipartFile.fromPath('file', file.path)); // Use file.path safely
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('Data uploaded successfully');
+      } else {
+        print('Failed to upload: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+
+
+
+
+
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await _picker.pickImage(source: source);
@@ -66,7 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       backgroundImage: _profileImage != null
                           ? FileImage(_profileImage!) as ImageProvider
                           : AssetImage('lib/images/profile.png'),
-                      backgroundColor: Colors.grey[200],
+                      //backgroundColor: Colors.grey[200],
                     ),
                     Positioned(
                       bottom: 0,
@@ -162,13 +202,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 // Save button
                 ElevatedButton(
-                  onPressed: () {
-                    // Add save functionality here
-                     Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const DashboardPage(mobilenopref: '',)),
-                        );
+                  onPressed: () async {
+                    if (_profileImage == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Please select a profile image.")),
+                      );
+                      return;
+                    }
+
+                    await uploadData(_profileImage, widget.userId, _selectedGender);
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const DashboardPage(mobilenopref: '')),
+                    );
                   },
+
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(

@@ -21,11 +21,17 @@ public class ImageData {
 
     @Getter
     private String userType;
+
+    @Getter
+    @Setter
+    private String userId;
     private String type;
 
     @Lob
     @Column(name = "image_data", columnDefinition = "LONGBLOB", nullable = false)
-    private byte[] imageData;
+    private byte[] imageData = new byte[0];
+
+
 
     public void setUserType(String userType) {
         this.userType = userType.toLowerCase();

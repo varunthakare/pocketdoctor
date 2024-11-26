@@ -41,6 +41,9 @@ public class PatientController {
     @Autowired
     private HospitalService hospitalService;
 
+    @Autowired
+    ImageDataService imageDataService;
+
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody PatientData patientData) {
@@ -126,6 +129,7 @@ public class PatientController {
             //KYC status to false by default
             String otp = otpService.generateOtp();
             patientData.setOtp(otp);
+            patientData.setProfilename("No profile");
             userServices.saveUser(patientData);
 
             System.out.println(otp);
@@ -202,6 +206,7 @@ public class PatientController {
         data.put("Name", patientData.getName());
         data.put("mobileno", patientData.getMobileno());
         data.put("city",patientData.getCity());
+        data.put("profileName",patientData.getProfilename());
 
         if(appointments != null) data.put("appointmentData", appointments);
         else data.put("appointmentData", "No Appointment");
