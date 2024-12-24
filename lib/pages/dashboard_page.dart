@@ -78,7 +78,7 @@ class _DashboardPageState extends State<DashboardPage> {
     //print(widget.mobileno);
 
     //final url = Uri.parse('http://localhost:8585/api/dashboard/${mobileno}');
-    final url = Uri.parse('http://192.168.59.56:8585/api/dashboard/${mobilenopref}');
+    final url = Uri.parse('http://localhost:8585/api/dashboard/${mobilenopref}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -142,7 +142,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
 
   Future<void> _fetchSearchData(String city) async {
-    final url = Uri.parse('http://192.168.59.56:8585/api/dashboard/city/$city');
+    final url = Uri.parse('http://localhost:8585/api/dashboard/city/$city');
 
     try {
       final response = await http.get(url);
