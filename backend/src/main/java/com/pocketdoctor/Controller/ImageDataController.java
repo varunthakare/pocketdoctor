@@ -2,7 +2,9 @@ package com.pocketdoctor.Controller;
 
 import com.pocketdoctor.model.ImageData;
 import com.pocketdoctor.model.ImageUploadResponse;
+import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.services.ImageDataService;
+import com.pocketdoctor.services.UserServices;
 import com.pocketdoctor.utils.ImageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +22,26 @@ public class ImageDataController {
     @Autowired
     private ImageDataService imageDataService;
 
+    @Autowired
+    UserServices userServices;
+
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId, @RequestParam("userType") String userType){
         try {
             // Retrieve the file name
             String fileName = file.getOriginalFilename();
             System.out.println("Uploaded file name: " + fileName);
 
+            PatientData patientData = userServices.findById(userId);
+
+            patientData.setProfilename(fileName);
+            userServices.saveUser(patientData);
+
             // Process the file (e.g., compress and save)
             ImageData imageData = ImageData.builder()
                     .name(fileName) // Store the file name
+                    .userId(userId)
+                    .userType(userType)
                     .type(file.getContentType())
                     .imageData(ImageUtil.compressImage(file.getBytes()))
                     .build();

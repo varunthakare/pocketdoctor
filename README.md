@@ -1,30 +1,39 @@
+<img src="screenshoot/logo.png" width="100%" >
+
 # Pocket Doctor - Healthcare Appointment & Emergency Service
 
-## Overview
 
-Pocket Doctor is a healthcare management application that allows users to book doctor appointments, access medical history, and request emergency ambulance services. The app aims to simplify healthcare processes, enhance patient experience, and provide timely assistance in emergencies. It is built using Flutter for the mobile app and Spring Boot for the backend.
+## Overview
+<img src="screenshoot/Intro.png" width="200" align="right">
+
+Pocket Doctor is an easy-to-use healthcare management app that helps users book doctor appointments, access their medical history, and request emergency ambulance services. It allows users to book appointments with doctors at convenient times, reducing waiting time. The app also lets users, especially senior citizens, store and view their medical records, making it easier for doctors to provide better care. In case of emergencies, the app has a one-tap ambulance booking feature that quickly finds and sends the nearest ambulance to the user’s location. Pocket Doctor aims to make healthcare processes simpler, improve patient experiences, and provide fast help during emergencies. The app is built using Flutter for the mobile interface and Spring Boot for the backend, ensuring smooth and reliable performance. 
+
 
 ## Key Features
-- Doctor Appointment Scheduling: Patients can book appointments with doctors based on availability, with real-time confirmation.
+- Doctor Appointment Scheduling - Patients can book appointments with doctors based on availability, with real-time confirmation.
 
-- One-Tap Emergency Ambulance Service: Users can request emergency ambulances, with automatic dispatch based on the user's location.
+- One-Tap Emergency Ambulance Service - Users can request emergency ambulances, with automatic dispatch based on the user's location.
 
-- Comprehensive Medical History: A feature for senior citizens to maintain a digital medical history, allowing doctors to access critical health information for effective treatment.
+- Comprehensive Medical History - A feature for senior citizens to maintain a digital medical history, allowing doctors to access critical health information for effective treatment.
 
-- Fraud Detection (AI-powered): An AI-powered feature to help users detect potential fraud or suspicious activity related to their medical services.
+- Fraud Detection (AI-powered) - An AI-powered feature to help users detect potential fraud or suspicious activity related to their medical services.
+
+<img src="screenshoot/Home.png" width="100%">
 
 ## Tech Stack:
+<img src="screenshoot/login.png" width="200" align="right">
 
-- Frontend: Flutter for building cross-platform mobile applications with a native performance.
+- Frontend - Flutter for building cross-platform mobile applications with a native performance.
 
-- Backend: Spring Boot for creating robust and scalable RESTful APIs.
+- Backend - Spring Boot for creating robust and scalable RESTful APIs.
 
-- Database: MySQL for relational data storage.
+- Database - MySQL for relational data storage.
 
-- AI: Machine learning algorithms for fraud detection and analysis.
+- AI - Machine learning algorithms for fraud detection and analysis.
 
-- Others: Firebase for push notifications, Google Maps API for location-based services, Twilio for SMS notifications.
+- Firebase for push notifications, Google Maps API for location-based services, Twilio for SMS notifications.
 
+<br>
 
 ## Contributors
 
@@ -105,6 +114,8 @@ Pocket Doctor is a healthcare management application that allows users to book d
 
 - Utilizes AI-powered algorithms to analyze user interactions and detect potential fraudulent activities or suspicious patterns related to healthcare services.
 - Helps ensure the integrity of the system and prevents misuse of medical resources.
+
+<img src="screenshoot/doctor.png" width="50%" height="50%"><img src="screenshoot/hospital.png" width="50%" height="50%"> 
 
 ## Acknowledgements
 - Google Maps API: For ambulance location tracking and map integration.

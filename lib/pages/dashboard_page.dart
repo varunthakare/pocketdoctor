@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'hospitaldash_page.dart';
@@ -17,13 +20,15 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   String name = "";
-  String hospitalId = "";
+  String userId = "";
   String mobileno = "";
   dynamic appointment;
   late List<dynamic> hospitals = [];
   int _selectedIndex = 0;
   late List<dynamic> usedData = [];
   String userCity = "";
+  String profileName = "";
+  Uint8List? _profileImage;
 
   TextEditingController _searchController = new TextEditingController();
 
@@ -81,12 +86,13 @@ class _DashboardPageState extends State<DashboardPage> {
 
         setState(() {
           final data = responseData['data'] ?? {};
-          hospitalId = data['id']?.toString() ?? "";
+          userId = data['id']?.toString() ?? "";
           name = data['Name'] ?? "Unknown";
           mobileno = data['mobileno'] ?? "";
           hospitals = data['Hospitals'] ?? [];
           usedData = data['Hospitals'] ?? [];
           userCity = data['city'];
+          profileName = data['profileName'];
           appointment = data['appointmentData'];
         });
 
@@ -103,7 +109,37 @@ class _DashboardPageState extends State<DashboardPage> {
       print('Error fetching data: $e');
     }
     print('$usedData');
+    print('profile name $profileName');
+    getProfileFile(profileName);
   }
+
+  Future<void> getProfileFile(String fileName) async {
+    final url = Uri.parse('http://localhost:8585/image/$fileName');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final imageBytes = response.bodyBytes;
+
+        setState(() {
+          if (kIsWeb) {
+            _profileImage = imageBytes; // Use bytes for web.
+          } else {
+            _profileImage = File.fromRawPath(imageBytes) as Uint8List?; // Use File for mobile.
+          }
+        });
+
+        print('Image fetched and displayed successfully.');
+      } else {
+        throw Exception('Failed to load image: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching image: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load profile image')),
+      );
+    }
+  }
+
 
   Future<void> _fetchSearchData(String city) async {
     final url = Uri.parse('http://192.168.59.56:8585/api/dashboard/city/$city');
@@ -185,11 +221,13 @@ class _DashboardPageState extends State<DashboardPage> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to ProfilePage
+              MaterialPageRoute(builder: (context) => ProfilePage(userId:userId)), // Navigate to ProfilePage
             );
           },
           child: CircleAvatar(
-            backgroundImage: AssetImage('lib/images/profile.png'),
+            backgroundImage: _profileImage != null
+                ? MemoryImage(_profileImage as Uint8List) // Display fetched image
+                : AssetImage('lib/images/profile.png') as ImageProvider, // Fallback to placeholder
           ),
         ),
       ),

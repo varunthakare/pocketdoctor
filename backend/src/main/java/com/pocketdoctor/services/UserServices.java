@@ -1,16 +1,12 @@
 package com.pocketdoctor.services;
 
-import com.pocketdoctor.model.DoctorData;
 import com.pocketdoctor.model.PatientData;
 import com.pocketdoctor.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Service
@@ -86,6 +82,10 @@ public class UserServices {
     public PatientData findByMobileNo(String mobileno) {
 
         return userRepository.findByMobileno(mobileno).orElse(null);
+    }
+
+    public PatientData findById(String id) {
+        return userRepository.findById(Integer.valueOf(id)).orElse(null); // Changed to Long
     }
 
     //public PatientData findByUsername(String username){
