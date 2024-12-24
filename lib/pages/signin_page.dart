@@ -13,7 +13,7 @@ class SignInPage extends StatefulWidget {
 }
 
 Future<void> sendOtp(String mobileno) async {
-  final url = Uri.parse('http://localhost:8585/api/login');
+  final url = Uri.parse('http://192.168.59.56:8585/api/login');
   final body = json.encode(
       {
         "mobileno": mobileno
@@ -42,7 +42,7 @@ Future<void> sendOtp(String mobileno) async {
 }
 
 Future<void> verifyOtp(BuildContext context,String mobileNo, String otp) async {
-  final url = Uri.parse('http://localhost:8585/api/login/otp-verify');
+  final url = Uri.parse('http://192.168.59.56:8585/api/login/otp-verify');
   final body = json.encode({"mobileno": mobileNo, "otp": otp});
 
   try {
