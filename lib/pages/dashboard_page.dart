@@ -138,6 +138,7 @@ class _DashboardPageState extends State<DashboardPage> {
         SnackBar(content: Text('Failed to load profile image')),
       );
     }
+    print("$_profileImage");
   }
 
 
