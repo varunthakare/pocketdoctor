@@ -28,7 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
       return; // Exit the function if the file is null
     }
 
-    final url = Uri.parse('http://localhost:8585/image/upload');
+    final url = Uri.parse('http://10.10.5.128:8585/image/upload');
 
     try {
       final request = http.MultipartRequest('POST', url)
@@ -246,11 +246,10 @@ class _ProfilePageState extends State<ProfilePage> {
       padding: EdgeInsets.all(10),
       child: Column(
         children: [
-          // Delete icon at the top-right corner
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(), // Empty space for alignment
+              SizedBox(),
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.red),
                 onPressed: _deleteProfileImage,

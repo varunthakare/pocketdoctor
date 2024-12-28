@@ -41,8 +41,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _initializeData() async {
-
-
     await _loadStoredData();
     mobilenopref = widget.mobilenopref;
     _fetchDashboardData(); // Call once after loading stored data
@@ -78,7 +76,7 @@ class _DashboardPageState extends State<DashboardPage> {
     //print(widget.mobileno);
 
     //final url = Uri.parse('http://localhost:8585/api/dashboard/${mobileno}');
-    final url = Uri.parse('http://localhost:8585/api/dashboard/${mobilenopref}');
+    final url = Uri.parse('http://10.10.5.128:8585/api/dashboard/${mobilenopref}');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -114,7 +112,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> getProfileFile(String fileName) async {
-    final url = Uri.parse('http://localhost:8585/image/$fileName');
+    final url = Uri.parse('http://10.10.5.128:8585/image/$fileName');
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
@@ -143,7 +141,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
 
   Future<void> _fetchSearchData(String city) async {
-    final url = Uri.parse('http://localhost:8585/api/dashboard/city/$city');
+    final url = Uri.parse('http://10.10.5.128:8585/api/dashboard/city/$city');
 
     try {
       final response = await http.get(url);
