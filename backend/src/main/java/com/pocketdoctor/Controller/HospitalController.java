@@ -42,15 +42,38 @@ public class HospitalController {
     @Autowired
     private UserServices patientService;
 
+    @Autowired
+    private GoogleMapsService googleMapsService;
+
     @PostMapping("/add")
     public ResponseEntity<HospitalData> addHospital(@RequestBody HospitalData hospitalData) {
         try {
+
+            if (hospitalData.getLocation() == null || !hospitalData.getLocation().contains(" ")) {
+                throw new IllegalArgumentException("Invalid location format. Expected 'latitude longitude'.");
+            }
+
+            String[] location = hospitalData.getLocation().split(" ");
+            double latitude = Double.parseDouble(location[0]);
+            double longitude = Double.parseDouble(location[1]);
+
+            String liveLocationUrl = googleMapsService.generateLiveLocationUrl(latitude, longitude);
+            hospitalData.setLocation(liveLocationUrl);
+
             HospitalData savedHospital = hospitalRepository.save(hospitalData);
             return new ResponseEntity<>(savedHospital, HttpStatus.CREATED);
+
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid input: " + e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+
         } catch (Exception e) {
+
+            System.err.println("Error occurred while adding hospital: " + e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<String> loginHospital(@RequestBody HospitalData hospitalData){
@@ -82,7 +105,6 @@ public class HospitalController {
 
     @GetMapping("/dashboard/{username}")
     public ResponseEntity<Map<String, Object>> getDashboardData(@PathVariable("username") String username) {
-        // Fetch the hospitalId based on the username
         Integer hospitalId = hospitalService.getHospitalId(username); // Ensure this returns a valid Integer or throws an exception
 
         if (hospitalId == null) {
@@ -93,14 +115,12 @@ public class HospitalController {
         int totalDoctors = doctorService.getTotalDoctorsByHospital(String.valueOf(hospitalId));
         int totalPatients = appointmentService.getTotalPatientsByHospital(String.valueOf(hospitalId));
 
-        // Prepare data to be returned in the response
         Map<String, Object> dashboardData = new HashMap<>();
         dashboardData.put("ID", hospitalId);
         dashboardData.put("Name", hospitalName);
         dashboardData.put("totalDoctors", totalDoctors);
         dashboardData.put("totalPatients", totalPatients);
 
-        // Return the data as a ResponseEntity
         return ResponseEntity.ok(dashboardData);
     }
 

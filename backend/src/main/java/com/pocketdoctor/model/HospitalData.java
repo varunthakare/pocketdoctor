@@ -19,6 +19,15 @@ public class HospitalData {
     String city;
     boolean verify;
     String beds;
+    String location;
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 
     public String getBeds() {
         return beds;
@@ -43,7 +52,7 @@ public class HospitalData {
         return address;
     }
 
-    public HospitalData(Integer id, String username, String name, String password, String address, String city, boolean verify, String beds) {
+    public HospitalData(Integer id, String username, String name, String password, String address, String city, boolean verify, String beds, String location) {
         this.id = id;
         this.username = username;
         this.name = name;
@@ -52,6 +61,7 @@ public class HospitalData {
         this.city = city;
         this.verify = verify;
         this.beds = beds;
+        this.location = location;
     }
 
     public String getCity() {

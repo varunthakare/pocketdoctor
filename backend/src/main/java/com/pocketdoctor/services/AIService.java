@@ -1,54 +1,34 @@
 package com.pocketdoctor.services;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 
 @Service
 public class AIService {
 
-    @Value("${openai.api.key}")
-    private String apiKey;
+    //@Value("${gemini.api.key}")
+    private String geminiApiKey;
 
-    @Value("${openai.api.url}")
-    private String apiUrl;
+    private final RestTemplate restTemplate;
 
-    public String getAIResponse(String input) {
-        try {
-            // Construct the JSON payload
-            String jsonPayload = String.format(
-                    "{ \"model\": \"text-davinci-003\", \"prompt\": \"%s\", \"max_tokens\": 150, \"temperature\": 0.7 }",
-                    input.replace("\"", "\\\"")
-            );
+    public AIService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
-            // Debug Payload
-            System.out.println("JSON Payload: " + jsonPayload);
+    public String getGeminiPrice(String symbol) {
+        String url = "https://api.gemini.com/v1/pubticker/" + symbol;
 
-            // Build the HTTP request
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl))
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Bearer " + apiKey)
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonPayload))
-                    .build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + geminiApiKey);
 
-            // Send the HTTP request
-            HttpClient client = HttpClient.newHttpClient();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 
-            // Debug Response
-            System.out.println("Status Code: " + response.statusCode());
-            System.out.println("Response: " + response.body());
-
-            return response.body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-            return "Error occurred while calling AI API: " + e.getMessage();
-        }
+        return response.getBody();
     }
 }
