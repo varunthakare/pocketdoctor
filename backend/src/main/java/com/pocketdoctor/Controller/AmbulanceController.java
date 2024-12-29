@@ -19,8 +19,6 @@ public class AmbulanceController {
             String hospital = googleMapsService.findNearestHospital(latitude, longitude);
             String liveLocationUrl = googleMapsService.generateLiveLocationUrl(latitude, longitude);
 
-            // Send location and hospital details (e.g., via SMS or email)
-            // For simplicity, returning details as a response.
             String responseMessage = String.format(
                     "Ambulance booked. Live location: %s. Nearest hospital: %s.",
                     liveLocationUrl, hospital
